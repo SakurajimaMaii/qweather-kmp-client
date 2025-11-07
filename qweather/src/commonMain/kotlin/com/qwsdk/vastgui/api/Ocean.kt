@@ -30,25 +30,25 @@ import io.ktor.client.request.*
  *
  * 海洋数据API提供全球主要港口和城市的潮汐和潮流数据。
  */
-class Ocean internal constructor(private val QWeather: QWeather) {
+class Ocean internal constructor(private val client: QWeather) {
     /**
      * [潮汐](https://dev.qweather.com/docs/api/ocean/tide/)
      *
      * 未来10天全球潮汐数据，包括满潮、干潮高度和时间，逐小时潮汐数据。
      *
-     * @param location 需要查询的潮汐站点，请填写潮汐站点的 [LocationID] ，
-     * LocationID 可通过 [POI][Geo.poiLookup] 搜索服务获取。例如 location=P2951 。
-     * @param date 选择日期，最多可选择未来 10 天（包含今天）的数据。日期格式为 yyyyMMdd ，
-     * 例如 date=20200531 。
+     * @param location 需要查询的潮汐站点，请填写潮汐站点的 [LocationID] ， LocationID 可通过
+     * [POI][Geo.poiLookup] 搜索服务获取。例如 location=P2951 。
+     * @param date 选择日期，最多可选择未来 10 天（包含今天）的数据。日期格式为 yyyyMMdd ， 例如 date=20200531
+     * 。
      */
     @Throws(IllegalStateException::class)
     suspend fun tide(
         location: LocationID,
         date: String
     ): Result<Tide> = apiCatching {
-        check(QWeather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         DateUtil(date).verifyYMD()
-        QWeather.client.get("ocean/tide") {
+        client.httpClient.get("ocean/tide") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -62,23 +62,14 @@ class Ocean internal constructor(private val QWeather: QWeather) {
      * 未来10天全球潮流数据，包括潮流流速和流向。
      *
      * @param location 需要查询的潮流站点，请填写潮流站点的
-     * [LocationID](https://dev.qweather.com/docs/resource/glossary/#locationid) ，
-     * LocationID 可通过 [POI][Geo.poiLookup] 搜索服务获取。例如 location=P66981 。
-     * @param date 选择日期，最多可选择未来 10 天（包含今天）的数据。日期格式为 yyyyMMdd ，
-     * 例如 date=20200531 。
+     * [LocationID](https://dev.qweather.com/docs/resource/glossary/#locationid)
+     * ， LocationID 可通过 [POI][Geo.poiLookup] 搜索服务获取。例如 location=P66981 。
+     * @param date 选择日期，最多可选择未来 10 天（包含今天）的数据。日期格式为 yyyyMMdd ， 例如 date=20200531
+     * 。
      */
-    @Throws(IllegalStateException::class)
-    suspend fun currents(
-        location: LocationID,
-        date: String
-    ): Result<Currents> = apiCatching {
-        check(QWeather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        DateUtil(date).verifyYMD()
-        QWeather.client.get("ocean/currents") {
-            url {
-                parameter("location", location.location)
-                parameter("date", date)
-            }
-        }.body()
+    @Throws(RuntimeException::class)
+    @Deprecated(message = "潮流 API 已弃用，将在2025年11月1日停止服务", level = DeprecationLevel.ERROR)
+    fun currents(location: LocationID, date: String): Result<Currents> = runCatching {
+        throw RuntimeException("潮流 API 已弃用，将在2025年11月1日停止服务")
     }
 }
