@@ -32,7 +32,7 @@ import io.ktor.client.request.*
  *
  * 太阳辐射API支持获取全球任意坐标的辐射数据，包括净太阳辐射，太阳散射辐射和太阳直接辐射。
  */
-class SolarRadiation internal constructor(private val QWeather: QWeather) {
+class SolarRadiation internal constructor(private val client: QWeather) {
     /**
      * [太阳辐射逐小时预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-hourly-forecast/)
      *
@@ -46,9 +46,9 @@ class SolarRadiation internal constructor(private val QWeather: QWeather) {
         hour: Hour = Hour.Hour24,
         location: Coordinate
     ): Result<SolarRadiation> = runCatching {
-        check(QWeather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         check(hour is Hour.Hour24 || hour is Hour.Hour72) { "无效时间范围：仅支持 Hour24 或 Hour72。" }
-        QWeather.client.get("solar-radiation/${hour.range}") {
+        client.httpClient.get("solar-radiation/${hour.range}") {
             parameter("location", location.location)
         }.body()
     }

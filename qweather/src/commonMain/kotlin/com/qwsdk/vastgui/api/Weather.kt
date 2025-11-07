@@ -27,10 +27,10 @@ import io.ktor.client.request.*
 /**
  * [城市天气](https://dev.qweather.com/docs/api/weather/)
  *
- * 城市天气预报提供包括中国 3000+ 市县区在内的全球 20万+ 城市的天气预报，
- * 支持实时天气、最多 30 天预报及最多 7 天逐小时天气预报。
+ * 城市天气预报提供包括中国 3000+ 市县区在内的全球 20万+ 城市的天气预报， 支持实时天气、最多 30 天预报及最多 7
+ * 天逐小时天气预报。
  */
-class Weather internal constructor(private val qweather: QWeather) {
+class Weather internal constructor(private val client: QWeather) {
     /**
      * [实时天气](https://dev.qweather.com/docs/api/weather/weather-now/)
      *
@@ -43,7 +43,8 @@ class Weather internal constructor(private val qweather: QWeather) {
      * LocationID 可通过 [GeoAPI][Geo] 获取。
      * @param unit 数据单位设置，可选值包括unit=m（公制单位，默认）和unit=i（英制单位）。更多选项和说明参考
      * [度量衡单位](https://dev.qweather.com/docs/resource/unit) 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     @Throws(IllegalStateException::class)
@@ -53,7 +54,7 @@ class Weather internal constructor(private val qweather: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<WeatherNow> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        qweather.client.get("weather/now") {
+        client.httpClient.get("weather/now") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -72,7 +73,8 @@ class Weather internal constructor(private val qweather: QWeather) {
      * LocationID 可通过 [GeoAPI][Geo] 获取。
      * @param unit 数据单位设置，可选值包括unit=m（公制单位，默认）和unit=i（英制单位）。更多选项和说明参考
      * [度量衡单位](https://dev.qweather.com/docs/resource/unit) 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     @Throws(IllegalStateException::class)
@@ -83,10 +85,10 @@ class Weather internal constructor(private val qweather: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<WeatherDaily> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        val standardRange = qweather.apiPlan.isStandard()
-        val freeRange = qweather.apiPlan.isFree() && (Day.Day3 == days || Day.Day7 == days)
+        val standardRange = client.apiPlan.isStandard()
+        val freeRange = client.apiPlan.isFree() && (Day.Day3 == days || Day.Day7 == days)
         check(standardRange || freeRange) { "无效的时间范围，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        qweather.client.get("weather/${days.range}") {
+        client.httpClient.get("weather/${days.range}") {
             parameter("location", location.location)
             parameter("lang", lang)
             parameter("unit", unit)
@@ -103,7 +105,8 @@ class Weather internal constructor(private val qweather: QWeather) {
      * LocationID 可通过 [GeoAPI][Geo] 获取。
      * @param unit 数据单位设置，可选值包括unit=m（公制单位，默认）和unit=i（英制单位）。更多选项和说明参考
      * [度量衡单位](https://dev.qweather.com/docs/resource/unit) 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     suspend fun hourly(
@@ -113,10 +116,10 @@ class Weather internal constructor(private val qweather: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<WeatherHourly> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        val standardRange = qweather.apiPlan.isStandard()
-        val freeRange = qweather.apiPlan.isFree() && Hour.Hour24 == hours
+        val standardRange = client.apiPlan.isStandard()
+        val freeRange = client.apiPlan.isFree() && Hour.Hour24 == hours
         check(standardRange || freeRange) { "无效的时间范围，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        qweather.client.get("weather/${hours.range}") {
+        client.httpClient.get("weather/${hours.range}") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)

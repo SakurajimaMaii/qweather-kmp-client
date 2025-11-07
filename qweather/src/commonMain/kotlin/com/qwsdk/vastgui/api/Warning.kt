@@ -41,7 +41,7 @@ import io.ktor.client.request.*
  * 支持的 [预警严重程度](https://dev.qweather.com/docs/resource/warning-info/#warning-severity) 和
  * [预警类型](https://dev.qweather.com/docs/resource/warning-info/#warning-type) 。
  */
-class Warning internal constructor(private val qweather: QWeather) {
+class Warning internal constructor(private val client: QWeather) {
     /**
      * [天气灾害预警](https://dev.qweather.com/docs/api/warning/weather-warning/)
      *
@@ -60,7 +60,7 @@ class Warning internal constructor(private val qweather: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<Warning> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        qweather.client.get("warning/now") {
+        client.httpClient.get("warning/now") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -81,7 +81,7 @@ class Warning internal constructor(private val qweather: QWeather) {
     suspend fun list(
         range: QWeather.CountryCode = QWeather.CountryCode.CN
     ): Result<WarningCityList> = apiCatching {
-        qweather.client.get("warning/list") {
+        client.httpClient.get("warning/list") {
             url {
                 parameter("range", range)
             }

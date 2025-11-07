@@ -36,7 +36,7 @@ import kotlin.time.ExperimentalTime
  * 热带气旋（台风）API提供全球主要海洋流域的台风信息，包括台风实时位置、等级、气压、
  * 风速，还可查询台风路径和台风预报信息。
  */
-class Tropical internal constructor(private val qweather: QWeather) {
+class Tropical internal constructor(private val client: QWeather) {
     /**
      * [台风预报](https://dev.qweather.com/docs/api/tropical-cyclone/storm-forecast/)
      *
@@ -48,8 +48,8 @@ class Tropical internal constructor(private val qweather: QWeather) {
      */
     @Throws(IllegalStateException::class)
     suspend fun forecast(stormID: StormId): Result<StormForecast> = apiCatching {
-        check(qweather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        qweather.client.get("tropical/storm-forecast") {
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        client.httpClient.get("tropical/storm-forecast") {
             url {
                 parameter("stormid", stormID.id)
             }
@@ -66,8 +66,8 @@ class Tropical internal constructor(private val qweather: QWeather) {
      */
     @Throws(IllegalStateException::class)
     suspend fun track(stormID: StormId): Result<StormTrack> = apiCatching {
-        check(qweather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        qweather.client.get("tropical/storm-track") {
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        client.httpClient.get("tropical/storm-track") {
             url {
                 parameter("stormid", stormID.id)
             }
@@ -88,12 +88,12 @@ class Tropical internal constructor(private val qweather: QWeather) {
         year: String,
         basin: QWeather.BasinType = QWeather.BasinType.NP
     ): Result<StormList> = apiCatching {
-        check(qweather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         check(basin == QWeather.BasinType.NP) { "台风列表目前不支持此区域: ${basin.name.lowercase()}!" }
         val currentYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year.toString().toInt()
         val lastYear = currentYear - 1
         check(year == currentYear.toString() || year == lastYear.toString()) { "台风列表目前不支持该年份：$year" }
-        qweather.client.get("tropical/storm-list") {
+        client.httpClient.get("tropical/storm-list") {
             url {
                 parameter("basin", basin)
                 parameter("year", year)

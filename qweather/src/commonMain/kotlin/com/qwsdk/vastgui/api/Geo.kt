@@ -75,7 +75,7 @@ class Geo internal constructor(private val client: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<GeoLookup> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
-        client.client.get {
+        client.httpClient.get {
             url {
                 url("${client.apiPlan.geoHost}/city/lookup")
                 parameter("key", client.apiKey)
@@ -108,7 +108,7 @@ class Geo internal constructor(private val client: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<GeoTop> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
-        client.client.get {
+        client.httpClient.get {
             url {
                 url("${client.apiPlan.geoHost}/city/top")
                 parameter("key", client.apiKey)
@@ -143,7 +143,7 @@ class Geo internal constructor(private val client: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<GeoPoi> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
-        client.client.get {
+        client.httpClient.get {
             url {
                 url("${client.apiPlan.geoHost}/poi/lookup")
                 parameter("key", client.apiKey)
@@ -179,7 +179,7 @@ class Geo internal constructor(private val client: QWeather) {
     ): Result<GeoPoiRange> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
         check(radius in 1..50) { "无效的数量: $radius, 可用的范围：1-50!" }
-        client.client.get {
+        client.httpClient.get {
             url("${client.apiPlan.geoHost}/poi/range")
             parameter("key", client.apiKey)
             parameter("location", location.location)

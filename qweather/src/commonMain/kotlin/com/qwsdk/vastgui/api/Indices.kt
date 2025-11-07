@@ -28,7 +28,7 @@ import io.ktor.client.request.*
  * 天气生活指数包括洗车指数、穿衣指数、感冒指数、过敏指数、紫外线指数、
  * 钓鱼指数等数据。天气指数支持中国3000+个市县区和海外 15 万个城市天气预报。
  */
-class Indices internal constructor(private val qweather: QWeather) {
+class Indices internal constructor(private val client: QWeather) {
     private suspend fun indices(
         days: String,
         location: Location,
@@ -40,7 +40,7 @@ class Indices internal constructor(private val qweather: QWeather) {
             arrayOf(QWeather.IndicesType.ALL)
         } else types
         val typeString = typeArray.map { parseIndices(it) }.joinToString(",")
-        qweather.client.get("indices/$days") {
+        client.httpClient.get("indices/$days") {
             url {
                 parameter("location", location.location)
                 parameter("type", typeString)

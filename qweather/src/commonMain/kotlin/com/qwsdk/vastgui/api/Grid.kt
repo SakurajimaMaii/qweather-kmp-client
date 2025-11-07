@@ -39,7 +39,7 @@ import io.ktor.client.request.*
  * 2. 注意：格点天气是一种数值预报，由卫星、气象雷达等数据通过模型算法运算而来，它可能受到许多
  *    因素的影响，如山脉、建筑物、人类活动、大气变化等。格点天气与观测站数据会有所不同，不可直接对比。
  */
-class Grid internal constructor(private val qweather: QWeather) {
+class Grid internal constructor(private val client: QWeather) {
     /**
      * [格点实时天气](https://dev.qweather.com/docs/api/grid-weather/grid-weather-now/)
      *
@@ -48,7 +48,8 @@ class Grid internal constructor(private val qweather: QWeather) {
      * @param location 需要查询地区的以英文逗号分隔的经度,纬度坐标 [Coordinate] 。
      * @param unit 数据单位设置，可选值包括unit=m（公制单位，默认）和unit=i（英制单位）。更多选项和说明参考
      * [度量衡单位](https://dev.qweather.com/docs/resource/unit) 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     suspend fun now(
@@ -56,7 +57,7 @@ class Grid internal constructor(private val qweather: QWeather) {
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<GridNow> = apiCatching {
-        qweather.client.get("grid-weather/now") {
+        client.httpClient.get("grid-weather/now") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -73,7 +74,8 @@ class Grid internal constructor(private val qweather: QWeather) {
      * @param location 需要查询地区的以英文逗号分隔的经度,纬度坐标 [Coordinate] 。
      * @param unit 数据单位设置，可选值包括unit=m（公制单位，默认）和unit=i（英制单位）。更多选项和说明参考
      * [度量衡单位](https://dev.qweather.com/docs/resource/unit) 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     suspend fun daily(
@@ -83,7 +85,7 @@ class Grid internal constructor(private val qweather: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<GridDaily> = apiCatching {
         check(Day.Day3 == days || Day.Day7 == days) { "无效的时间范围，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        qweather.client.get("grid-weather/${days.range}") {
+        client.httpClient.get("grid-weather/${days.range}") {
             parameter("location", location.location)
             parameter("lang", lang)
             parameter("unit", unit)
@@ -98,7 +100,8 @@ class Grid internal constructor(private val qweather: QWeather) {
      * @param location 需要查询地区的以英文逗号分隔的经度,纬度坐标 [Coordinate] 。
      * @param unit 数据单位设置，可选值包括unit=m（公制单位，默认）和unit=i（英制单位）。更多选项和说明参考
      * [度量衡单位](https://dev.qweather.com/docs/resource/unit) 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     suspend fun hourly(
@@ -107,10 +110,10 @@ class Grid internal constructor(private val qweather: QWeather) {
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<GridHourly> = apiCatching {
-        val standardRange = qweather.apiPlan.isStandard() && (Hour.Hour24 == hours || Hour.Hour72 == hours)
-        val freeRange = qweather.apiPlan.isFree() && Hour.Hour24 == hours
+        val standardRange = client.apiPlan.isStandard() && (Hour.Hour24 == hours || Hour.Hour72 == hours)
+        val freeRange = client.apiPlan.isFree() && Hour.Hour24 == hours
         check(standardRange || freeRange) { "无效的时间范围，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        qweather.client.get("grid-weather/${hours.range}") {
+        client.httpClient.get("grid-weather/${hours.range}") {
             parameter("location", location.location)
             parameter("lang", lang)
             parameter("unit", unit)

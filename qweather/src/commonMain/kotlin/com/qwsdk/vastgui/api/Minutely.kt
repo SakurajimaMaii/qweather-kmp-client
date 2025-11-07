@@ -33,7 +33,7 @@ import io.ktor.client.request.*
  * 分钟级降水 API （临近预报）支持中国 1 公里精度的分钟级降雨预报数据，
  * 为每一分钟的降雨进行精准预测。
  */
-class Minutely internal constructor(private val qweather: QWeather) {
+class Minutely internal constructor(private val client: QWeather) {
     /**
      * [分钟级降水](https://dev.qweather.com/docs/api/minutely/minutely-precipitation/)
      *
@@ -47,7 +47,7 @@ class Minutely internal constructor(private val qweather: QWeather) {
         location: Coordinate,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<RainMinutely> = apiCatching {
-        qweather.client.get("minutely/5m") {
+        client.httpClient.get("minutely/5m") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)

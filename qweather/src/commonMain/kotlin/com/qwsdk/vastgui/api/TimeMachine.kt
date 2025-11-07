@@ -30,7 +30,7 @@ import io.ktor.client.request.*
  *
  * 时光机可以获取最近10天的历史天气和空气质量数据。
  */
-class TimeMachine internal constructor(private val qweather: QWeather) {
+class TimeMachine internal constructor(private val client: QWeather) {
     /**
      * [天气时光机](https://dev.qweather.com/docs/api/time-machine/time-machine-weather/)
      *
@@ -51,9 +51,9 @@ class TimeMachine internal constructor(private val qweather: QWeather) {
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<HistoricalWeather> = apiCatching {
-        check(qweather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         DateUtil(date).verifyYMD()
-        qweather.client.get("historical/weather") {
+        client.httpClient.get("historical/weather") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -83,9 +83,9 @@ class TimeMachine internal constructor(private val qweather: QWeather) {
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<HistoricalAir> = apiCatching {
-        check(qweather.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         DateUtil(date).verifyYMD()
-        qweather.client.get("historical/air") {
+        client.httpClient.get("historical/air") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
