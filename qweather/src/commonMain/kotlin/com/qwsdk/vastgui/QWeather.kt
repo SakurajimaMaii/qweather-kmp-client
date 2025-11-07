@@ -56,6 +56,7 @@ import com.qwsdk.vastgui.api.Tropical
 import com.qwsdk.vastgui.api.Warning
 import com.qwsdk.vastgui.api.Weather
 import com.qwsdk.vastgui.utils.SingletonHolder
+import com.qwsdk.vastgui.utils.exceptions.InvalidDateException
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -65,56 +66,54 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
-
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
- * [QWSdk](https://dev.qweather.com/docs/api/)
+ * [QWeather](https://dev.qweather.com/docs/api/)
  *
- * 和风天气开发服务提供了基于位置的天气数据，包括实况天气、30天预报、
- * 逐小时预报、空气质量AQI，灾害预警、分钟级降水、生活指数等天气数据服务。
- *
- * - [GeoAPI][Geo] 和风天气 GeoAPI 提供全球地理位位置、全球城市搜索服务，
- * 支持经纬度坐标反查、多语言、模糊搜索等功能。
- * - [城市天气][Weather] 城市天气预报提供包括中国 3000+ 市县区在内的全球
- * 20 万+城市的天气预报，支持实时天气、最多 30 天预报及最多 7 天逐小时天气预报。
+ * 和风天气开发服务提供了基于位置的天气数据，包括实况天气、30天预报、 逐小时预报、空气质量AQI，灾害预警、分钟级降水、生活指数等天气数据服务。
+ * - [GeoAPI][Geo] 和风天气 GeoAPI 提供全球地理位位置、全球城市搜索服务， 支持经纬度坐标反查、多语言、模糊搜索等功能。
+ * - [城市天气][Weather] 城市天气预报提供包括中国 3000+ 市县区在内的全球 20 万+城市的天气预报，支持实时天气、最多 30
+ *   天预报及最多 7 天逐小时天气预报。
  * - [分钟预报][Minutely] 分钟级降水 API （临近预报）支持中国 1 公里精度的分钟
- * 级降雨预报数据，为每一分钟的降雨进行精准预测。
- * - [格点天气][Grid] 以经纬度为基准的全球高精度、公里级、格点化天气预报产品，
- * 包括任意经纬度的实时天气和天气预报。
- * - [预警][Warning] 和风天气灾害预警API提供了全球极端天气预警服务，覆盖中国
- * 及全球数十个国家或地区。
- * - [天气指数][Indices] 天气生活指数包括洗车指数、穿衣指数、感冒指数、过敏指数、
- * 紫外线指数、钓鱼指数等数据。天气指数支持中国 3000+ 个市县区和海外 15 万个城市
- * 天气预报。
- * - [空气质量(beta)][AirBeta] 全球空气质量，可以轻松的获取指定位置和城市的空气
- * 质量数据以及官方监测站数据。
+ *   级降雨预报数据，为每一分钟的降雨进行精准预测。
+ * - [格点天气][Grid] 以经纬度为基准的全球高精度、公里级、格点化天气预报产品， 包括任意经纬度的实时天气和天气预报。
+ * - [预警][Warning] 和风天气灾害预警API提供了全球极端天气预警服务，覆盖中国 及全球数十个国家或地区。
+ * - [天气指数][Indices] 天气生活指数包括洗车指数、穿衣指数、感冒指数、过敏指数、 紫外线指数、钓鱼指数等数据。天气指数支持中国
+ *   3000+ 个市县区和海外 15 万个城市 天气预报。
+ * - [空气质量(beta)][AirBeta] 全球空气质量，可以轻松的获取指定位置和城市的空气 质量数据以及官方监测站数据。
  * - [空气质量][Air] 中国 3000+ 市县区及 1700+ 监测站点的空气质量 AQI 数据，包
- * 括空气质量（AQI）实时数据，空气质量未来 5 天预报。
+ *   括空气质量（AQI）实时数据，空气质量未来 5 天预报。
  * - [时光机][TimeMachine] 时光机可以获取最近 10 天的历史天气和空气质量数据。
  * - [热带气旋（台风）][Tropical] 热带气旋（台风）API 提供全球主要海洋流域的
- * 台风信息，包括台风实时位置、等级、气压、风速，还可查询台风路径和台风预报信息。
+ *   台风信息，包括台风实时位置、等级、气压、风速，还可查询台风路径和台风预报信息。
  * - [海洋数据][Ocean] 海洋数据API提供全球主要港口和城市的潮汐和潮流数据。
  * - [太阳辐射][SolarRadiation] 太阳辐射 API 支持获取全球任意坐标的辐射数据，
- * 包括净太阳辐射，太阳散射辐射和太阳直接辐射。
- * - [天文][Astronomy] 天文API提供了全球任意地点未来 60 天的日出日落、太阳
- * 高度角、月升月落和月相数据。
+ *   包括净太阳辐射，太阳散射辐射和太阳直接辐射。
+ * - [天文][Astronomy] 天文API提供了全球任意地点未来 60 天的日出日落、太阳 高度角、月升月落和月相数据。
  *
  * ```kotlin
  * // 获取单例对象
- * val qw = QWSdk
- *     .getInstance(Configuration(Plan.Standard, "<Your-Key>"))
+ * val qw = QWeather.getInstance(Configuration(Plan.Standard, "<Your-Key>"))
  * ```
  */
 @OptIn(ExperimentalSerializationApi::class)
 class QWeather private constructor(internal val configuration: Configuration) {
 
     /**
-     * QWSdk 配置
+     * [QWeather] 配置。
      *
      * @property plan 订阅计划。
-     * @property apiKey Key，点击 [项目和KEY](https://dev.qweather.com/docs/configuration/project-and-key/) 了解详情。
+     * @property apiKey Key，点击
+     * [项目和KEY](https://dev.qweather.com/docs/configuration/project-and-key/)
+     * 了解详情。
      * @property logger 允许你对日志进行处理。
      */
     class Configuration(
@@ -126,9 +125,20 @@ class QWeather private constructor(internal val configuration: Configuration) {
 
     companion object Companion : SingletonHolder<QWeather, Configuration>(::QWeather)
 
-    internal var apiPlan: Plan = configuration.plan
-    internal var apiKey: String = configuration.apiKey
-    internal var client: HttpClient = HttpClient {
+    @OptIn(ExperimentalTime::class)
+    @get:Throws(InvalidDateException::class)
+    internal val apiPlan: Plan
+        get() {
+            // https://blog.qweather.com/announce/public-api-domain-change-to-api-host/
+            val limit = LocalDate(2026, 6, 1).atStartOfDayIn(TimeZone.UTC)
+            if (Clock.System.now() >= limit && configuration.plan !is Plan.HostApi)
+                throw InvalidDateException("相关 api 已经停止服务，具体参考 https://blog.qweather.com/announce/public-api-domain-change-to-api-host/")
+            return configuration.plan
+        }
+
+    internal val apiKey: String = configuration.apiKey
+
+    internal val client: HttpClient = HttpClient {
         defaultRequest {
             url {
                 protocol = URLProtocol.HTTPS
@@ -152,69 +162,43 @@ class QWeather private constructor(internal val configuration: Configuration) {
         }
     }
 
-    /**
-     * @see Air
-     */
+    /** @see Air */
     fun air(): Air = Air(this)
 
-    /**
-     * @see AirBeta
-     */
+    /** @see AirBeta */
     fun airBeta(): AirBeta = AirBeta(this)
 
-    /**
-     * @see Astronomy
-     */
+    /** @see Astronomy */
     fun astronomy(): Astronomy = Astronomy(this)
 
-    /**
-     * @see Geo
-     */
+    /** @see Geo */
     fun geo(): Geo = Geo(this)
 
-    /**
-     * @see Grid
-     */
+    /** @see Grid */
     fun grid(): Grid = Grid(this)
 
-    /**
-     * @see Indices
-     */
+    /** @see Indices */
     fun indices(): Indices = Indices(this)
 
-    /**
-     * @see Minutely
-     */
+    /** @see Minutely */
     fun minutely(): Minutely = Minutely(this)
 
-    /**
-     * @see Ocean
-     */
+    /** @see Ocean */
     fun ocean(): Ocean = Ocean(this)
 
-    /**
-     * @see SolarRadiation
-     */
+    /** @see SolarRadiation */
     fun solarRadiation(): SolarRadiation = SolarRadiation(this)
 
-    /**
-     * @see TimeMachine
-     */
+    /** @see TimeMachine */
     fun timeMachine(): TimeMachine = TimeMachine(this)
 
-    /**
-     * @see Tropical
-     */
+    /** @see Tropical */
     fun tropical(): Tropical = Tropical(this)
 
-    /**
-     * @see Warning
-     */
+    /** @see Warning */
     fun warning(): Warning = Warning(this)
 
-    /**
-     * @see Weather
-     */
+    /** @see Weather */
     fun weather(): Weather = Weather(this)
 
     /**
@@ -309,19 +293,61 @@ class QWeather private constructor(internal val configuration: Configuration) {
     }
 
     /**
-     * [订阅](https://dev.qweather.com/docs/finance/subscription)
+     * [订阅](https://dev.qweather.com/docs/finance/subscription) 。
+     *
+     * @since 1.1.3
      */
-    enum class Plan(internal val host: String) {
-        Free("devapi.qweather.com"),
-        Standard("api.qweather.com");
+    sealed class Plan(internal val host: String) {
+
+        /**
+         * 用于 [Geo] 的请求根路径。
+         *
+         * @since 1.1.3
+         */
+        open val geoHost: String
+            get() = throw NotImplementedError()
+
+        /** @since 1.1.3 */
+        @Deprecated(
+            message = "devapi.qweather.com 该域名地址将于2026年6月1日停止服务",
+            replaceWith = ReplaceWith("HostApi(your_hostapi)"),
+            level = DeprecationLevel.WARNING
+        )
+        object Free : Plan("devapi.qweather.com") {
+            override val geoHost: String = "https://geoapi.qweather.com/v2"
+        }
+
+        /** @since 1.1.3 */
+        @Deprecated(
+            message = "api.qweather.com 该域名地址将于2026年6月1日停止服务",
+            replaceWith = ReplaceWith("HostApi(your_hostapi)"),
+            level = DeprecationLevel.WARNING
+        )
+        object Standard : Plan("api.qweather.com") {
+            override val geoHost: String = "https://geoapi.qweather.com/v2"
+        }
+
+        /**
+         * 根据
+         * [公共API域名变更为API Host](https://blog.qweather.com/announce/public-api-domain-change-to-api-host/)
+         * ， 推荐你将 [Free] 和 [Standard] 更换为 [HostApi]。
+         *
+         * @param host 参考
+         * [API Host](https://dev.qweather.com/docs/configuration/api-host/) 来获取。
+         * @since 1.1.3
+         */
+        class HostApi(host: String) : Plan(host) {
+            override val geoHost: String = "https://${host}/geo/v2"
+        }
 
         /**
          * 判断是否是标准版。
          *
          * @since 1.1.2
          */
-        internal fun isStandard() = this == Standard
-        internal fun isFree() = this == Free
+        internal fun isStandard() = this !is Free
+
+        internal fun isFree() = this !is Standard
     }
 
     /**
