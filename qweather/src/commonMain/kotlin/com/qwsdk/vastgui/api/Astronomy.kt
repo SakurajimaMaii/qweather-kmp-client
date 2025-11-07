@@ -29,7 +29,7 @@ import io.ktor.client.request.*
  *
  * 天文API提供了全球任意地点未来60天的日出日落、太阳高度角、月升月落和月相数据。
  */
-class Astronomy internal constructor(private val qweather: QWeather) {
+class Astronomy internal constructor(private val client: QWeather) {
     /**
      * [日出日落](https://dev.qweather.com/docs/api/astronomy/sunrise-sunset/)
      *
@@ -39,17 +39,17 @@ class Astronomy internal constructor(private val qweather: QWeather) {
      *
      * @param location 需要查询地区的 [LocationID] 或以英文逗号分隔的经度,纬度坐标 [Coordinate] ，
      * LocationID 可通过 [GeoAPI][Geo] 获取。
-     * @param date 选择日期，最多可选择未来60天（包含今天）的数据。日期格式为 yyyyMMdd，例如
-     * date=20200531 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param date 选择日期，最多可选择未来60天（包含今天）的数据。日期格式为 yyyyMMdd，例如 date=20200531 。
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     suspend fun sun(
         location: Location, date: String, lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<Sun> = apiCatching {
-        check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
+        check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
         DateUtil(date).verifyYMD()
-        qweather.client.get("astronomy/sun") {
+        client.httpClient.get("astronomy/sun") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -67,17 +67,17 @@ class Astronomy internal constructor(private val qweather: QWeather) {
      *
      * @param location 需要查询地区的 [LocationID] 或以英文逗号分隔的经度,纬度坐标 [Coordinate] ，
      * LocationID 可通过 [GeoAPI][Geo] 获取。
-     * @param date 选择日期，最多可选择未来60天（包含今天）的数据。日期格式为 yyyyMMdd，例如
-     * date=20200531 。
-     * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
+     * @param date 选择日期，最多可选择未来60天（包含今天）的数据。日期格式为 yyyyMMdd，例如 date=20200531 。
+     * @param lang 多语言设置，请阅读
+     * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
     suspend fun moon(
         location: Location, date: String, lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<Moon> = apiCatching {
-        check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
+        check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
         DateUtil(date).verifyYMD()
-        qweather.client.get("astronomy/moon") {
+        client.httpClient.get("astronomy/moon") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -102,7 +102,7 @@ class Astronomy internal constructor(private val qweather: QWeather) {
     ): Result<SolarElevationAngle> = apiCatching {
         DateUtil(date).verifyYMD()
         DateUtil(time).verifyHM()
-        qweather.client.get("astronomy/solar-elevation-angle") {
+        client.httpClient.get("astronomy/solar-elevation-angle") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
