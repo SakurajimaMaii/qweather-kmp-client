@@ -35,6 +35,7 @@ class TestAstronomy {
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 
@@ -45,18 +46,20 @@ class TestAstronomy {
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 
     @Test
     fun solarElevationAngleTest() = runTest {
         qw.astronomy().solarElevationAngle(
-            Coordinate(120.34,36.08), "20240117", "1230", "0800", 43
+            Coordinate(120.34, 36.08), "20240117", "1230", "0800", 43
         ).onSuccess {
             println("${it.solarAzimuthAngle} ${it.solarElevationAngle} ${it.hourAngle}")
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 }

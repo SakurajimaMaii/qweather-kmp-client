@@ -16,27 +16,31 @@
 
 package com.qwsdk.vastgui.entity.grid.now
 
+import com.qwsdk.vastgui.entity.ErrorInfo
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.entity.grid.now.GridNow.Now
 import com.qwsdk.vastgui.utils.QWSdkResponse
 import kotlinx.serialization.Serializable
 
 /**
  * [格点实时天气](https://dev.qweather.com/docs/api/grid-weather/grid-weather-now/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property now 参考 [Now] 。
  * @property refer 参考 [Refer] 。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  */
 @Serializable
 data class GridNow(
-    override val code: String,
     val fxLink: String? = null,
     val now: Now? = null,
     val refer: Refer = Refer(),
-    val updateTime: String? = null
+    val updateTime: String? = null,
+    val error: ErrorInfo? = null,
+    override val code: String = error?.status?.toString() ?: "200"
 ) : QWSdkResponse {
     /**
      * [格点实时天气](https://dev.qweather.com/docs/api/grid-weather/grid-weather-now/)
@@ -45,17 +49,24 @@ data class GridNow(
      * @property dew 露点温度。可能为空。
      * @property feelsLike 体感温度。
      * @property humidity 相对湿度，百分比数值。
-     * @property icon 天气状况的 [图标代码](https://dev.qweather.com/docs/resource/icons/) ，
-     * 另请参考 [天气图标项目](https://icons.qweather.com/) 。
+     * @property icon 天气状况的
+     * [图标代码](https://dev.qweather.com/docs/resource/icons/)
+     * ， 另请参考 [天气图标项目](https://icons.qweather.com/) 。
      * @property obsTime 数据观测时间。
      * @property precip 当前小时累计降水量，默认单位：毫米。
      * @property pressure 大气压强，默认单位：百帕。
      * @property temp 温度，默认单位：摄氏度。
      * @property text 天气状况的文字描述，包括阴晴雨雪等天气状态的描述。
-     * @property wind360 [风向](https://dev.qweather.com/docs/resource/wind-info/#wind-direction) 360 角度。
-     * @property windDir [风向](https://dev.qweather.com/docs/resource/wind-info/#wind-direction) 。
-     * @property windScale [风力等级](https://dev.qweather.com/docs/resource/wind-info/#wind-scale) 。
-     * @property windSpeed [风速](https://dev.qweather.com/docs/resource/wind-info/#wind-speed) ，公里/小时。
+     * @property wind360
+     * [风向](https://dev.qweather.com/docs/resource/wind-info/#wind-direction)
+     * 360 角度。
+     * @property windDir
+     * [风向](https://dev.qweather.com/docs/resource/wind-info/#wind-direction) 。
+     * @property windScale
+     * [风力等级](https://dev.qweather.com/docs/resource/wind-info/#wind-scale) 。
+     * @property windSpeed
+     * [风速](https://dev.qweather.com/docs/resource/wind-info/#wind-speed)
+     * ，公里/小时。
      */
     @Serializable
     data class Now(
