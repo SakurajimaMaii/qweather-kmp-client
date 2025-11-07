@@ -19,6 +19,7 @@ package com.qwsdk.vastgui.main
 import com.qwsdk.vastgui.QWeather.Lang
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.randomID
+import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -36,6 +37,7 @@ class TestAir {
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 
@@ -48,30 +50,59 @@ class TestAir {
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 
     @Test
     fun airNowTest() = runTest {
-        qw.airBeta().now(LocationID(locationId)).onSuccess {
-            it.station.forEach { station ->
+        qw.airQuality().current(Coordinate(117.20, 39.10)).onSuccess {
+            it.stations.forEach { station ->
                 println(station)
             }
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
+        }
+    }
+
+    @Test
+    fun hourlyTest() = runTest {
+        qw.airQuality().hourly(Coordinate(117.20, 39.10)).onSuccess {
+            it.hours.forEach { station ->
+                println(station)
+            }
+            assertEquals(it.code.toInt(), 200)
+        }.onFailure {
+            println(it)
+            assertEquals(true, false)
+        }
+    }
+
+    @Test
+    fun dailiesTest() = runTest {
+        qw.airQuality().daily(Coordinate(117.20, 39.10)).onSuccess {
+            it.days.forEach { station ->
+                println(station)
+            }
+            assertEquals(it.code.toInt(), 200)
+        }.onFailure {
+            println(it)
+            assertEquals(true, false)
         }
     }
 
     @Test
     fun stationTest() = runTest {
-        qw.airBeta().station(LocationID(locationId)).onSuccess {
-            it.pollutant.forEach { pollutant ->
+        qw.airQuality().station(LocationID("P58911")).onSuccess {
+            it.pollutants.forEach { pollutant ->
                 println(pollutant)
             }
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 }

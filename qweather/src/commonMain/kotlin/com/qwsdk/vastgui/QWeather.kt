@@ -43,7 +43,7 @@ import com.qwsdk.vastgui.QWeather.POIType.CSTA
 import com.qwsdk.vastgui.QWeather.POIType.TSTA
 import com.qwsdk.vastgui.QWeather.POIType.scenic
 import com.qwsdk.vastgui.api.Air
-import com.qwsdk.vastgui.api.AirBeta
+import com.qwsdk.vastgui.api.AirQuality
 import com.qwsdk.vastgui.api.Astronomy
 import com.qwsdk.vastgui.api.Geo
 import com.qwsdk.vastgui.api.Grid
@@ -69,7 +69,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.time.Clock
@@ -88,9 +87,8 @@ import kotlin.time.ExperimentalTime
  * - [预警][Warning] 和风天气灾害预警API提供了全球极端天气预警服务，覆盖中国 及全球数十个国家或地区。
  * - [天气指数][Indices] 天气生活指数包括洗车指数、穿衣指数、感冒指数、过敏指数、 紫外线指数、钓鱼指数等数据。天气指数支持中国
  *   3000+ 个市县区和海外 15 万个城市 天气预报。
- * - [空气质量(beta)][AirBeta] 全球空气质量，可以轻松的获取指定位置和城市的空气 质量数据以及官方监测站数据。
- * - [空气质量][Air] 中国 3000+ 市县区及 1700+ 监测站点的空气质量 AQI 数据，包
- *   括空气质量（AQI）实时数据，空气质量未来 5 天预报。
+ * - [空气质量][AirQuality] 全球空气质量 API ，适配当地空气质量标准，可以轻松的获取指定位置的空气质量、
+ *   污染物和健康建议。目前已经覆盖 100 多个国家或地区数据，包括实时和预报数据，分辨率为 1x1 公里。
  * - [时光机][TimeMachine] 时光机可以获取最近 10 天的历史天气和空气质量数据。
  * - [热带气旋（台风）][Tropical] 热带气旋（台风）API 提供全球主要海洋流域的
  *   台风信息，包括台风实时位置、等级、气压、风速，还可查询台风路径和台风预报信息。
@@ -138,7 +136,7 @@ class QWeather private constructor(internal val configuration: Configuration) {
 
     internal val apiKey: String = configuration.apiKey
 
-    internal val client: HttpClient = HttpClient {
+    internal val httpClient: HttpClient = HttpClient {
         defaultRequest {
             url {
                 protocol = URLProtocol.HTTPS
@@ -162,11 +160,31 @@ class QWeather private constructor(internal val configuration: Configuration) {
         }
     }
 
-    /** @see Air */
+    /**
+     * 可以考虑使用 [AirQuality] 进行替换。
+     *
+     * @see Air
+     * @see AirQuality
+     */
+    @Deprecated(
+        message = "2025年10月1日起，新注册的开发者将无法使用弃用版本空气质量 API，2026年6月1日起，弃用版本空气质量 API 将对所有开发者关闭并停止服务，所有开发者将无法再访问弃用版本获取数据，包括使用API、SDK",
+        level = DeprecationLevel.WARNING
+    )
     fun air(): Air = Air(this)
 
-    /** @see AirBeta */
-    fun airBeta(): AirBeta = AirBeta(this)
+    /** @see AirQuality */
+    @Deprecated(
+        message = "使用 airQuality() 替代",
+        replaceWith = ReplaceWith("airQuality()"),
+        level = DeprecationLevel.WARNING
+    )
+    fun airBeta(): AirQuality = AirQuality(this)
+
+    /**
+     * @see AirQuality
+     * @since 1.1.3
+     */
+    fun airQuality(): AirQuality = AirQuality(this)
 
     /** @see Astronomy */
     fun astronomy(): Astronomy = Astronomy(this)
