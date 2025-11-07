@@ -56,7 +56,7 @@ import com.qwsdk.vastgui.api.Tropical
 import com.qwsdk.vastgui.api.Warning
 import com.qwsdk.vastgui.api.Weather
 import com.qwsdk.vastgui.utils.SingletonHolder
-import com.qwsdk.vastgui.utils.exceptions.InvalidDateException
+import com.qwsdk.vastgui.error.InvalidDateException
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest

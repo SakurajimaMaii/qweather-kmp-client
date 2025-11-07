@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.utils.exceptions
+package com.qwsdk.vastgui.error
 
 class InvalidDateException(msg: String) : Exception(msg)

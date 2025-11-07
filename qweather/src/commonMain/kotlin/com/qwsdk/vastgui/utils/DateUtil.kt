@@ -16,7 +16,7 @@
 
 package com.qwsdk.vastgui.utils
 
-import com.qwsdk.vastgui.utils.exceptions.InvalidDateException
+import com.qwsdk.vastgui.error.InvalidDateException
 
 class DateUtil(private val date: String) {
     @Throws(InvalidDateException::class)

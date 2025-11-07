@@ -16,7 +16,7 @@
 
 package com.qwsdk.vastgui.utils
 
-import com.qwsdk.vastgui.utils.exceptions.QWSdkException
+import com.qwsdk.vastgui.error.ErrorCodeException
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -30,14 +30,14 @@ internal inline fun <T, R : QWSdkResponse> T.apiCatching(block: T.() -> R): Resu
     }
     return if(response.code.toInt() != 200){
         val exception = when(response.code.toInt()){
-            204 -> QWSdkException.E204()
-            400 -> QWSdkException.E400()
-            401 -> QWSdkException.E401()
-            402 -> QWSdkException.E402()
-            403 -> QWSdkException.E403()
-            404 -> QWSdkException.E404()
-            409 -> QWSdkException.E429()
-            500 -> QWSdkException.E500()
+            204 -> ErrorCodeException.E204()
+            400 -> ErrorCodeException.E400()
+            401 -> ErrorCodeException.E401()
+            402 -> ErrorCodeException.E402()
+            403 -> ErrorCodeException.E403()
+            404 -> ErrorCodeException.E404()
+            409 -> ErrorCodeException.E429()
+            500 -> ErrorCodeException.E500()
             else -> Throwable()
         }
         Result.failure(exception)

@@ -16,7 +16,7 @@
 
 package com.qwsdk.vastgui.main.utils
 
-import com.qwsdk.vastgui.utils.exceptions.InvalidDateException
+import com.qwsdk.vastgui.error.InvalidDateException
 import com.qwsdk.vastgui.utils.DateUtil
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
