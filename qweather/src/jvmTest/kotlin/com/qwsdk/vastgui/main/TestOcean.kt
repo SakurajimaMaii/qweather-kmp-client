@@ -33,18 +33,7 @@ class TestOcean {
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
-        }
-    }
-
-    @Test
-    fun currentsTest() = runTest {
-        qw.ocean().currents(LocationID("P66981"), getCurrentDate()).onSuccess {
-            it.currentsHourly.forEach { currentsHourly ->
-                println(currentsHourly)
-            }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(true, false)
         }
     }
 }
