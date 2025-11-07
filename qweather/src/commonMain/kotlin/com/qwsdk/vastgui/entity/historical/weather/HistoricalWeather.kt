@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.historical.weather
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -31,12 +32,13 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class HistoricalWeather(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val weatherDaily: WeatherDaily? = null,
-    val weatherHourly: List<WeatherHourly> = emptyList()
-) : QWSdkResponse {
+    val weatherHourly: List<WeatherHourly> = emptyList(),
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [天气时光机](https://dev.qweather.com/docs/api/time-machine/time-machine-weather/)
      *

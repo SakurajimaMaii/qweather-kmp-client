@@ -18,7 +18,7 @@ package com.qwsdk.vastgui.entity.grid.daily
 
 import com.qwsdk.vastgui.entity.ErrorInfo
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
@@ -38,9 +38,9 @@ data class GridDaily(
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val updateTime: String? = null,
-    val error: ErrorInfo? = null,
-    override val code: String = error?.status?.toString() ?: "200"
-) : QWSdkResponse {
+    val code: String = "",
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [格点每日天气预报](https://dev.qweather.com/docs/api/grid-weather/grid-weather-daily-forecast/)
      *

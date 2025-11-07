@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.weather.hourly
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -31,12 +32,13 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class WeatherHourly(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val hourly: List<Hourly> = emptyList(),
     val refer: Refer = Refer(),
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [逐小时天气预报](https://dev.qweather.com/docs/api/weather/weather-hourly-forecast/)
      *

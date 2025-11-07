@@ -16,9 +16,9 @@
 
 package com.qwsdk.vastgui.entity.minutely
 
-import com.qwsdk.vastgui.api.Minutely
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -33,13 +33,14 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class RainMinutely(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val minutely: List<Minutely> = emptyList(),
     val refer: Refer = Refer(),
     val summary: String? = null,
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [分钟级降水](https://dev.qweather.com/docs/api/minutely/minutely-precipitation/)
      *

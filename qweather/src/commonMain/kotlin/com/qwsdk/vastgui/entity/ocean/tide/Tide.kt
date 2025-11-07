@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.ocean.tide
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -32,13 +33,14 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Tide(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val tideHourly: List<TideHourly> = emptyList(),
     val tideTable: List<TideTable> = emptyList(),
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [潮汐](https://dev.qweather.com/docs/api/ocean/tide/)
      *

@@ -16,9 +16,9 @@
 
 package com.qwsdk.vastgui.entity.airquality.station
 
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -35,9 +35,9 @@ import kotlinx.serialization.Transient
 data class AirQualityStationBean(
     val metadata: Metadata? = null,
     val pollutants: List<Pollutant> = emptyList(),
-    val error: ErrorInfo? = null,
-    @Transient override val code: String = error?.status?.toString() ?: "200"
-) : QWSdkResponse {
+    val code: String = "",
+    override val error: ErrorInfo? = null
+) : BaseResponse {
 
     /**
      * 响应的元数据。
@@ -82,38 +82,5 @@ data class AirQualityStationBean(
     data class Concentration(
         val value: Double = 0.0,
         val unit: String = ""
-    )
-
-    /**
-     * 请求错误信息。
-     *
-     * ```
-     * {
-     *   "error": {
-     *     "status": 400,
-     *     "type": "https://dev.qweather.com/docs/resource/error-code/#invalid-parameter",
-     *     "title": "Invalid Parameter",
-     *     "detail": "Invalid parameter, please check your request.",
-     *     "invalidParams": [
-     *       "LocationID"
-     *     ]
-     *   }
-     * }
-     * ```
-     *
-     * @property status HTTP 状态码，例如 400。
-     * @property type 错误类型链接，指向官方错误码文档。
-     * @property title 错误标题。
-     * @property detail 错误的详细描述。
-     * @property invalidParams 无效的参数字段列表（可选）。
-     * @since 1.1.3
-     */
-    @Serializable
-    data class ErrorInfo(
-        val status: Int = 0,
-        val type: String = "",
-        val title: String = "",
-        val detail: String = "",
-        val invalidParams: List<String> = emptyList()
     )
 }

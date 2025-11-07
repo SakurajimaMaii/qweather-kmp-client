@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.warning
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -31,12 +32,13 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Warning(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val updateTime: String? = null,
-    val warning: List<Warning> = emptyList()
-) : QWSdkResponse {
+    val warning: List<Warning> = emptyList(),
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [天气灾害预警](https://dev.qweather.com/docs/api/warning/weather-warning/)
      *

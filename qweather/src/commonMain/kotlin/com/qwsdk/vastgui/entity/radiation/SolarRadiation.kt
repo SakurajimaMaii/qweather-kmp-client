@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.radiation
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -30,11 +31,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class SolarRadiation(
-    override val code: String,
+    val code: String = "",
     val radiation: List<Radiation> = emptyList(),
     val refer: Refer,
-    val updateTime: String
-) : QWSdkResponse {
+    val updateTime: String,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [太阳辐射逐小时预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-hourly-forecast/)
      *

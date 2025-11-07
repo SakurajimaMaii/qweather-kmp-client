@@ -19,7 +19,8 @@ package com.qwsdk.vastgui.entity.geo.poi.range
 import com.qwsdk.vastgui.entity.Refer
 import com.qwsdk.vastgui.entity.geo.poi.GeoPoi
 import com.qwsdk.vastgui.entity.geo.poi.Poi
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -31,7 +32,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class GeoPoiRange(
-    override val code: String,
+    val code: String = "",
     val poi: List<Poi> = emptyList(),
-    val refer: Refer = Refer()
-) : QWSdkResponse
+    val refer: Refer = Refer(),
+    override val error: ErrorInfo? = null
+) : BaseResponse

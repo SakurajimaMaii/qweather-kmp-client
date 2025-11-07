@@ -17,28 +17,33 @@
 package com.qwsdk.vastgui.entity.air.now
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
  * [实时空气质量](https://dev.qweather.com/docs/api/air/air-now/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property now 参考 [Now] 。
  * @property refer 参考 [Refer] 。
  * @property station 参考 [Station] 。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  */
 @Serializable
 data class AirNow(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val now: Now? = null,
     val refer: Refer = Refer(),
     val station: List<Station> = emptyList(),
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [实时空气质量](https://dev.qweather.com/docs/api/air/air-now/)
      *

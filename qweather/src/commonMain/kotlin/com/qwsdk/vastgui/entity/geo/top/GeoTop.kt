@@ -19,22 +19,25 @@ package com.qwsdk.vastgui.entity.geo.top
 import com.qwsdk.vastgui.entity.Refer
 import com.qwsdk.vastgui.utils.GeoLocationID
 import com.qwsdk.vastgui.utils.LocationID
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
  * [热门城市查询](https://dev.qweather.com/docs/api/geoapi/top-city/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property refer 参考 [Refer] 。
  * @property topCityList 参考 [TopCity] 。
  */
 @Serializable
 data class GeoTop(
-    override val code: String,
+    val code: String = "",
     val refer: Refer = Refer(),
-    val topCityList: List<TopCity> = emptyList()
-) : QWSdkResponse {
+    val topCityList: List<TopCity> = emptyList(),
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [热门城市](https://dev.qweather.com/docs/api/geoapi/top-city/)
      *
@@ -43,14 +46,17 @@ data class GeoTop(
      * @property country 地区/城市所属国家名称。
      * @property fxLink 该地区的天气预报网页链接，便于嵌入你的网站或应用。
      * @property id 地区/城市ID。
-     * @property isDst 地区/城市是否当前处于 [夏令时](https://dev.qweather.com/docs/resource/glossary/#daylight-saving-time)。
+     * @property isDst 地区/城市是否当前处于
+     * [夏令时](https://dev.qweather.com/docs/resource/glossary/#daylight-saving-time)。
      * 1 表示当前处于夏令时， 0 表示当前不是夏令时。
      * @property lat 地区/城市纬度。
      * @property lon 地区/城市经度。
      * @property name 地区/城市名称。
-     * @property rank [地区评分](https://dev.qweather.com/docs/resource/glossary/#rank) 。
+     * @property rank
+     * [地区评分](https://dev.qweather.com/docs/resource/glossary/#rank) 。
      * @property type 地区/城市的属性。
-     * @property tz 地区/城市所在 [时区](https://dev.qweather.com/docs/resource/glossary/#timezone) 。
+     * @property tz 地区/城市所在
+     * [时区](https://dev.qweather.com/docs/resource/glossary/#timezone) 。
      * @property utcOffset 地区/城市目前与 UTC 时间偏移的小时数。
      */
     @Serializable

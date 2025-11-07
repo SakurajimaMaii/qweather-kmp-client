@@ -1,10 +1,9 @@
 package com.qwsdk.vastgui.entity.airquality.hourly
 
-import com.qwsdk.vastgui.utils.QWSdkResponse
-import kotlinx.serialization.EncodeDefault
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -23,9 +22,9 @@ import kotlinx.serialization.Transient
 data class AirQualityHourlyBean(
     val metadata: Metadata? = null,
     val hours: List<Hour> = emptyList(),
-    val error: ErrorInfo? = null,
-    @Transient override val code: String = error?.status?.toString() ?: "200"
-) : QWSdkResponse {
+    val code: String = "",
+    override val error: ErrorInfo? = null
+) : BaseResponse {
 
     /**
      * 元数据信息。
@@ -200,36 +199,4 @@ data class AirQualityHourlyBean(
             )
         }
     }
-
-    /**
-     * 请求错误信息。
-     *
-     * ```
-     * {
-     *   "error": {
-     *     "status": 400,
-     *     "type": "https://dev.qweather.com/docs/resource/error-code/#data-not-available",
-     *     "title": "Data Not Available",
-     *     "detail": "Data for this location is temporarily unavailable, please try another location."
-     *   }
-     * }
-     * ```
-     *
-     * @property status HTTP 状态码。
-     * @property type 错误类型链接。
-     * @property title 错误标题。
-     * @property detail 错误详情描述。
-     * @since 1.1.3
-     */
-    @Serializable
-    data class ErrorInfo(
-        @EncodeDefault
-        val status: Int = 0,
-        @EncodeDefault
-        val type: String = "",
-        @EncodeDefault
-        val title: String = "",
-        @EncodeDefault
-        val detail: String = ""
-    )
 }

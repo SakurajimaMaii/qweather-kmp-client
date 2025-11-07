@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.tropical.list
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import com.qwsdk.vastgui.utils.StormId
 import kotlinx.serialization.Serializable
 
@@ -32,12 +33,13 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class StormList(
-    override val code: String,
+    val code: String = "",
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val storm: List<Storm> = emptyList(),
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [台风列表](https://dev.qweather.com/docs/api/tropical-cyclone/storm-list/)
      *

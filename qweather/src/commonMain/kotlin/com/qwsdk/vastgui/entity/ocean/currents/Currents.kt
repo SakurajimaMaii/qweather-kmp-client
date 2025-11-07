@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.ocean.currents
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -32,13 +33,14 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Currents(
-    override val code: String,
+    val code: String = "",
     val currentsHourly: List<CurrentsHourly> = emptyList(),
     val currentsTable: List<CurrentsTable> = emptyList(),
     val fxLink: String? = null,
     val refer: Refer = Refer(),
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [潮流](https://dev.qweather.com/docs/api/ocean/currents/)
      *

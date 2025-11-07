@@ -19,7 +19,8 @@ package com.qwsdk.vastgui.entity.warning.list
 import com.qwsdk.vastgui.entity.Refer
 import com.qwsdk.vastgui.utils.GeoLocationID
 import com.qwsdk.vastgui.utils.LocationID
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -32,11 +33,12 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class WarningCityList(
-    override val code: String,
+    val code: String = "",
     val refer: Refer = Refer(),
     val updateTime: String? = null,
-    val warningLocList: List<WarningLoc> = emptyList()
-) : QWSdkResponse {
+    val warningLocList: List<WarningLoc> = emptyList(),
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [天气预警城市列表](https://dev.qweather.com/docs/api/warning/weather-warning-city-list/)
      *

@@ -17,7 +17,8 @@
 package com.qwsdk.vastgui.entity.geo.poi
 
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -29,7 +30,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class GeoPoi(
-    override val code: String,
+    val code: String = "",
     val poi: List<Poi> = emptyList(),
-    val refer: Refer = Refer()
-) : QWSdkResponse
+    val refer: Refer = Refer(),
+    override val error: ErrorInfo? = null
+) : BaseResponse

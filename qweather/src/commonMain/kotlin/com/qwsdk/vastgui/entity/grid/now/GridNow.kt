@@ -18,7 +18,7 @@ package com.qwsdk.vastgui.entity.grid.now
 
 import com.qwsdk.vastgui.entity.ErrorInfo
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.BaseResponse
 import kotlinx.serialization.Serializable
 
 /**
@@ -39,9 +39,9 @@ data class GridNow(
     val now: Now? = null,
     val refer: Refer = Refer(),
     val updateTime: String? = null,
-    val error: ErrorInfo? = null,
-    override val code: String = error?.status?.toString() ?: "200"
-) : QWSdkResponse {
+    val code: String = "",
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [格点实时天气](https://dev.qweather.com/docs/api/grid-weather/grid-weather-now/)
      *

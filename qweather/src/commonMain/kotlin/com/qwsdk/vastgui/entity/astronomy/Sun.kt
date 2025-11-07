@@ -16,9 +16,9 @@
 
 package com.qwsdk.vastgui.entity.astronomy
 
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
 import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
-import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
@@ -46,38 +46,6 @@ data class Sun(
     val sunrise: String? = null,
     val sunset: String? = null,
     val updateTime: String? = null,
-    val error: ErrorInfo? = null,
-    override val code: String = error?.status?.toString() ?: "200"
-) : QWSdkResponse {
-    /**
-     * 请求错误信息。
-     *
-     * ```
-     * {
-     *   "error": {
-     *     "status": 400,
-     *     "type": "https://dev.qweather.com/docs/resource/error-code/#data-not-available",
-     *     "title": "Data Not Available",
-     *     "detail": "Data for this location is temporarily unavailable, please try another location."
-     *   }
-     * }
-     * ```
-     *
-     * @property status HTTP 状态码。
-     * @property type 错误类型链接。
-     * @property title 错误标题。
-     * @property detail 错误详情描述。
-     * @since 1.1.3
-     */
-    @Serializable
-    data class ErrorInfo(
-        @EncodeDefault
-        val status: Int = 0,
-        @EncodeDefault
-        val type: String = "",
-        @EncodeDefault
-        val title: String = "",
-        @EncodeDefault
-        val detail: String = ""
-    )
-}
+    val code: String = "",
+    override val error: ErrorInfo? = null
+) : BaseResponse
