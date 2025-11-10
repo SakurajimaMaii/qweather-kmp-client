@@ -30,6 +30,10 @@ import kotlinx.serialization.Serializable
  * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
  */
 @Serializable
+@Deprecated(
+    message = "当前 API 已弃用，预计在2026年9月1日停止服务。",
+    level = DeprecationLevel.WARNING
+)
 data class SolarRadiation(
     val code: String = "",
     val radiation: List<Radiation> = emptyList(),
