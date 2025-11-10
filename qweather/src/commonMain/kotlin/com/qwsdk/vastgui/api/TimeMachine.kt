@@ -22,8 +22,14 @@ import com.qwsdk.vastgui.entity.historical.weather.HistoricalWeather
 import com.qwsdk.vastgui.utils.DateUtil
 import com.qwsdk.vastgui.utils.LocationID
 import com.qwsdk.vastgui.utils.apiCatching
-import io.ktor.client.call.*
-import io.ktor.client.request.*
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
 /**
  * [时光机](https://dev.qweather.com/docs/api/time-machine/)
@@ -45,6 +51,7 @@ class TimeMachine internal constructor(private val client: QWeather) {
      * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
+    @OptIn(ExperimentalTime::class)
     suspend fun weatherHistory(
         location: LocationID,
         date: String,
@@ -52,7 +59,9 @@ class TimeMachine internal constructor(private val client: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<HistoricalWeather> = apiCatching {
         check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        DateUtil(date).verifyYMD()
+        val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val range = current.minus(DatePeriod(days = 10))..current.minus(DatePeriod(days = 1))
+        check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
         client.httpClient.get("historical/weather") {
             url {
                 parameter("location", location.location)
@@ -77,6 +86,7 @@ class TimeMachine internal constructor(private val client: QWeather) {
      * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
+    @OptIn(ExperimentalTime::class)
     suspend fun airHistory(
         location: LocationID,
         date: String,
@@ -84,7 +94,9 @@ class TimeMachine internal constructor(private val client: QWeather) {
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<HistoricalAir> = apiCatching {
         check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        DateUtil(date).verifyYMD()
+        val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val range = current.minus(DatePeriod(days = 10))..current.minus(DatePeriod(days = 1))
+        check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
         client.httpClient.get("historical/air") {
             url {
                 parameter("location", location.location)

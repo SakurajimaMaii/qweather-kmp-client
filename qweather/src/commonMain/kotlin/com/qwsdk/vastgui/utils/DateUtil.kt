@@ -16,49 +16,48 @@
 
 package com.qwsdk.vastgui.utils
 
-import com.qwsdk.vastgui.error.InvalidDateException
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateRange
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.FormatStringsInDatetimeFormats
+import kotlinx.datetime.format.byUnicodePattern
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
-class DateUtil(private val date: String) {
-    @Throws(InvalidDateException::class)
-    fun verifyYMD() {
-        if (date.length != 8) {
-            throw InvalidDateException("Invalid Date length: ${date.length}, expect: 8!")
-        }
+/**
+ * @since 1.1.3
+ */
+internal object DateUtil {
 
-        val year = date.substring(0, 4).toInt()
-        val month = date.substring(4, 6).toInt()
-        val day = date.substring(6, 8).toInt()
+    /**
+     * yyyyMMdd 格式的时间。
+     *
+     * @since 1.1.3
+     */
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    internal val ymdFormat = LocalDate.Format { byUnicodePattern("yyyyMMdd") }
 
-        if (month !in 1..12) {
-            throw InvalidDateException("Invalid month: ${month}.")
-        }
+    /**
+     * HHmm 格式的时间。
+     *
+     * @since 1.1.3
+     */
+    @OptIn(FormatStringsInDatetimeFormats::class)
+    internal val hmFormat = LocalTime.Format { byUnicodePattern("HHmm") }
 
-        val isLeapYear = if (year % 4 == 0) {
-            if (year % 100 == 0) {
-                year % 400 == 0
-            } else
-                true
-        } else
-            false
+    /**
+     * @since 1.1.3
+     */
+    @OptIn(ExperimentalTime::class)
+    internal val now get() = Clock.System.now()
 
-        if (!isLeapYear && day == 29) {
-            throw InvalidDateException("Invalid Day: ${day}.")
-        }
-    }
-
-    @Throws(InvalidDateException::class)
-    fun verifyHM() {
-        if (date.length != 4) {
-            throw InvalidDateException("Invalid Date length: ${date.length}, expect: 4!")
-        }
-        val hour = date.substring(0, 2).toInt()
-        val minute = date.substring(2, 4).toInt()
-        if (hour !in 0..24) {
-            throw InvalidDateException("Invalid Hour: ${hour}.")
-        }
-
-        if (minute !in 0..60) {
-            throw InvalidDateException("Invalid Minute: ${minute}.")
-        }
+    /**
+     * 判断 [date] 是否在 [range] 范围内。
+     *
+     * @since 1.1.3
+     */
+    @OptIn(ExperimentalTime::class)
+    fun verifyYMD(date: String, range: LocalDateRange): Boolean {
+        return ymdFormat.parseOrNull(date)?.let { it in range } ?: false
     }
 }

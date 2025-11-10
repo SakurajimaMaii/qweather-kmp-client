@@ -24,6 +24,11 @@ import com.qwsdk.vastgui.utils.LocationID
 import com.qwsdk.vastgui.utils.apiCatching
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
 /**
  * [海洋数据](https://dev.qweather.com/docs/api/ocean/)
@@ -41,13 +46,16 @@ class Ocean internal constructor(private val client: QWeather) {
      * @param date 选择日期，最多可选择未来 10 天（包含今天）的数据。日期格式为 yyyyMMdd ， 例如 date=20200531
      * 。
      */
+    @OptIn(ExperimentalTime::class)
     @Throws(IllegalStateException::class)
     suspend fun tide(
         location: LocationID,
         date: String
     ): Result<Tide> = apiCatching {
         check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        DateUtil(date).verifyYMD()
+        val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val range = current..current.plus(DatePeriod(days = 9))
+        check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
         client.httpClient.get("ocean/tide") {
             url {
                 parameter("location", location.location)
@@ -68,7 +76,10 @@ class Ocean internal constructor(private val client: QWeather) {
      * 。
      */
     @Throws(RuntimeException::class)
-    @Deprecated(message = "潮流 API 已弃用，将在2025年11月1日停止服务", level = DeprecationLevel.ERROR)
+    @Deprecated(
+        message = "潮流 API 已弃用，将在2025年11月1日停止服务",
+        level = DeprecationLevel.ERROR
+    )
     fun currents(location: LocationID, date: String): Result<Currents> = runCatching {
         throw RuntimeException("潮流 API 已弃用，将在2025年11月1日停止服务")
     }
