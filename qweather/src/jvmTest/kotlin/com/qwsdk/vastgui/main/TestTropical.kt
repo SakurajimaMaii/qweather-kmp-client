@@ -33,6 +33,7 @@ class TestTropical {
                 assertEquals(it.code.toInt(), 200)
             }.onFailure {
                 println(it)
+                assertEquals(true, false)
             }
         }
     }
@@ -47,6 +48,7 @@ class TestTropical {
                 assertEquals(it.code.toInt(), 200)
             }.onFailure {
                 println(it)
+                assertEquals(true, false)
             }
         }
     }
@@ -60,6 +62,7 @@ class TestTropical {
             assertEquals(it.code.toInt(), 200)
         }.onFailure {
             println(it)
+            assertEquals(true, false)
         }
     }
 }
