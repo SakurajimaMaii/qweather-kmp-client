@@ -1,0 +1,53 @@
+package com.qwsdk.vastgui.entity.console
+
+import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.ErrorInfo
+import kotlinx.serialization.Serializable
+
+// Author: Vast Gui
+// Email: guihy2019@gmail.com
+// Date: 2025/11/11
+
+/**
+ * [请求量统计](https://dev.qweather.com/docs/api/console/stats/#request-example)
+ *
+ * @property asOf 当前数据的截止日期。
+ * @property errors 成功失败的 API 列表
+ * @property metadata 元信息。
+ * @property success 成功请求的 API 列表。
+ * @since 1.1.3
+ */
+@Serializable
+data class RequestMetrics(
+    val asOf: String? = null,
+    val errors: List<Error>? = null,
+    val metadata: Metadata? = null,
+    val success: List<Success>? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
+    /**
+     * 错误请求的 API 。
+     *
+     * @property api 错误请求的 API 名称。
+     * @property hours 最近24小时每小时的错误请求量，结束时间以 [asOf] 为准。例如
+     * [asOf]=2025-03-20T09:59Z，则数组中的最后一条数据代表 09:00～09:59（UTC）的请求量。
+     * @since 1.1.3
+     */
+    @Serializable
+    data class Error(val api: String, val hours: List<Int>)
+
+    /** @since 1.1.3 */
+    @Serializable
+    data class Metadata(val tag: String)
+
+    /**
+     * 成功请求的 API 。
+     *
+     * @property api 成功请求的 API 名称。
+     * @property hours 最近24小时每小时的成功请求量，结束时间以 [asOf] 为准。例如
+     * [asOf]=2025-03-20T09:59Z，则数组中的最后一条数据代表09:00～09:59（UTC）的请求量。
+     * @since 1.1.3
+     */
+    @Serializable
+    data class Success(val api: String, val hours: List<Int>)
+}

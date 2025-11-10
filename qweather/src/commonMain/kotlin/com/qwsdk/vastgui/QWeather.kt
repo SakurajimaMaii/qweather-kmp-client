@@ -45,6 +45,7 @@ import com.qwsdk.vastgui.QWeather.POIType.scenic
 import com.qwsdk.vastgui.api.Air
 import com.qwsdk.vastgui.api.AirQuality
 import com.qwsdk.vastgui.api.Astronomy
+import com.qwsdk.vastgui.api.Console
 import com.qwsdk.vastgui.api.Geo
 import com.qwsdk.vastgui.api.Grid
 import com.qwsdk.vastgui.api.Indices
@@ -218,6 +219,12 @@ class QWeather private constructor(internal val configuration: Configuration) {
 
     /** @see Weather */
     fun weather(): Weather = Weather(this)
+
+    /**
+     * @see Console
+     * @since 1.1.3
+     */
+    fun console(): Console = Console(this)
 
     /**
      * 需要查询的台风所在的流域，例如中国处于西北太平洋，即 basin=NP。当前仅支持 NP
