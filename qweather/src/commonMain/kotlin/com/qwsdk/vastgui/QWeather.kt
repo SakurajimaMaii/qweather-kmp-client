@@ -56,14 +56,20 @@ import com.qwsdk.vastgui.api.TimeMachine
 import com.qwsdk.vastgui.api.Tropical
 import com.qwsdk.vastgui.api.Warning
 import com.qwsdk.vastgui.api.Weather
-import com.qwsdk.vastgui.utils.SingletonHolder
 import com.qwsdk.vastgui.error.InvalidDateException
+import com.qwsdk.vastgui.utils.SingletonHolder
+import com.qwsdk.vastgui.utils.sign.getJwtSigner
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpSend
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.plugin
 import io.ktor.http.URLProtocol
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
@@ -109,18 +115,37 @@ class QWeather private constructor(internal val configuration: Configuration) {
     /**
      * [QWeather] 配置。
      *
-     * @property plan 订阅计划。
-     * @property apiKey Key，点击
-     * [项目和KEY](https://dev.qweather.com/docs/configuration/project-and-key/)
-     * 了解详情。
+     * @property plan 参考 [Plan] 。
+     * @property auth 参考 [Authentication] 。
      * @property logger 允许你对日志进行处理。
      */
-    class Configuration(
-        internal val plan: Plan,
-        internal val apiKey: String,
+    class Configuration {
+        internal val plan: Plan
+        internal val auth: Authentication
+
         /** @since 1.1.2 */
-        internal val logger: ((String) -> Unit)? = null
-    )
+        internal val logger: ((String) -> Unit)?
+
+        /** @since 1.1.3 */
+        @Deprecated(
+            message = "和风天气开发服务使用 JWT(JSON Web Token) 以及 API KEY 的方式进行身份认证。我们推荐使用 JWT 作为首选的身份认证方式，这将极大的提高安全性。",
+            replaceWith = ReplaceWith("QWeather.Configuration(plan,ApiKey(key),logger)",
+                "com.qwsdk.vastgui.QWeather.Plan", "com.qwsdk.vastgui.QWeather.Authentication.ApiKey"),
+            level = DeprecationLevel.WARNING
+        )
+        constructor(plan: Plan, key: String, logger: ((String) -> Unit)? = null) {
+            this.plan = plan
+            this.auth = Authentication.ApiKey(key)
+            this.logger = logger
+        }
+
+        /** @since 1.1.3 */
+        constructor(plan: Plan, auth: Authentication, logger: ((String) -> Unit)? = null) {
+            this.plan = plan
+            this.auth = auth
+            this.logger = logger
+        }
+    }
 
     companion object Companion : SingletonHolder<QWeather, Configuration>(::QWeather)
 
@@ -135,7 +160,7 @@ class QWeather private constructor(internal val configuration: Configuration) {
             return configuration.plan
         }
 
-    internal val apiKey: String = configuration.apiKey
+    internal val auth: Authentication = configuration.auth
 
     internal val httpClient: HttpClient = HttpClient {
         defaultRequest {
@@ -143,7 +168,6 @@ class QWeather private constructor(internal val configuration: Configuration) {
                 protocol = URLProtocol.HTTPS
                 host = configuration.plan.host
                 path("v7/")
-                parameters.append("key", apiKey)
             }
         }
         install(Logging) {
@@ -158,6 +182,23 @@ class QWeather private constructor(internal val configuration: Configuration) {
             json(Json {
                 explicitNulls = false
             })
+        }
+        if (auth is Authentication.Jwt) {
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        val token = getJwtSigner(auth.keyId, auth.projectId, auth.privateKey).getJwt()
+                        BearerTokens(token, "")
+                    }
+                }
+            }
+        }
+    }.also { client ->
+        if (auth is Authentication.ApiKey) {
+            client.plugin(HttpSend).intercept { request ->
+                request.url.parameters.append("key", auth.key)
+                execute(request)
+            }
         }
     }
 
@@ -373,6 +414,35 @@ class QWeather private constructor(internal val configuration: Configuration) {
         internal fun isStandard() = this !is Free
 
         internal fun isFree() = this !is Standard
+    }
+
+    /**
+     * [身份认证](https://dev.qweather.com/docs/configuration/authentication/) 。
+     *
+     * @since 1.1.3
+     */
+    sealed class Authentication {
+        /**
+         * [API
+         * KEY](https://dev.qweather.com/docs/configuration/authentication/#api-key)。
+         *
+         * 注意：为了提高安全性，SDK 5+ 将不再支持 API KEY 。从 2027 年 1 月 1 日起，我们将限制使用 API KEY
+         * 进行身份认证的每日请求数量。
+         *
+         * @since 1.1.3
+         */
+        @Deprecated(
+            message = "和风天气开发服务使用 JWT(JSON Web Token) 以及 API KEY 的方式进行身份认证。我们推荐使用 JWT 作为首选的身份认证方式，这将极大的提高安全性。",
+            level = DeprecationLevel.WARNING
+        )
+        class ApiKey(val key: String) : Authentication()
+
+        /**
+         * [Jwt](https://dev.qweather.com/docs/configuration/authentication/#json-web-token)。
+         *
+         * @since 1.1.3
+         */
+        class Jwt(val keyId: String, val projectId: String, val privateKey: String) : Authentication()
     }
 
     /**

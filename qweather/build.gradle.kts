@@ -57,6 +57,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.ktor.client.auth)
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.encoding)
@@ -89,6 +90,12 @@ kotlin {
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
                 implementation(libs.ktor.client.darwin)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.bcprov.jdk18on)
             }
         }
 
