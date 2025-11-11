@@ -14,7 +14,7 @@ class IosEd25519Signer(
 ) : JwtSigner {
 
     @OptIn(ExperimentalForeignApi::class)
-    override suspend fun sign(data: ByteArray): ByteArray {
+    override suspend fun getSign(data: ByteArray): ByteArray {
         TODO("Not yet implemented")
     }
 

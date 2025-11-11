@@ -1,8 +1,9 @@
 package com.qwsdk.vastgui.utils.sign
 
-import android.util.Base64
-import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
-import org.bouncycastle.crypto.signers.Ed25519Signer
+import io.ktor.util.decodeBase64Bytes
+import java.security.KeyFactory
+import java.security.Signature
+import java.security.spec.PKCS8EncodedKeySpec
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -19,14 +20,14 @@ class JvmEd25519Signer(
         privateKey.replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
             .replace("\n", "").trim()
-            .let { Ed25519PrivateKeyParameters(Base64.decode(it, Base64.DEFAULT), 0) }
+            .let { KeyFactory.getInstance("EdDSA").generatePrivate(PKCS8EncodedKeySpec(it.decodeBase64Bytes())) }
     }
 
-    override suspend fun sign(data: ByteArray): ByteArray {
-        return with(Ed25519Signer()) {
-            init(true, key)
+    override suspend fun getSign(data: ByteArray): ByteArray {
+        return with(Signature.getInstance("EdDSA")) {
+            initSign(key)
             update(data, 0, data.size)
-            generateSignature()
+            sign()
         }
     }
 
