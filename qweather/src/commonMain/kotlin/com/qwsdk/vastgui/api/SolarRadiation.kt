@@ -95,7 +95,6 @@ class SolarRadiation internal constructor(private val client: QWeather) {
             check(tilt != null && azimuth != null) { "额外信息为 poa，必须提供 tilt 和 azimuth" }
         }
         client.httpClient.get("https://${client.apiPlan.host}/solarradiation/v1/forecast/${location.latitude}/${location.longitude}") {
-            parameter("key", client.apiKey)
             parameter("hours", hours)
             parameter("internal", internal)
             parameter("tilt", tilt)

@@ -50,9 +50,7 @@ class Console internal constructor(private val client: QWeather) {
      */
     @Throws(IllegalStateException::class)
     suspend fun financeSummary(): Result<FinanceSummary> = apiCatching {
-        client.httpClient.get("https://${client.apiPlan.host}/finance/v1/summary") {
-            parameter("key", client.apiKey)
-        }.body()
+        client.httpClient.get("https://${client.apiPlan.host}/finance/v1/summary").body()
     }
 
     /**
@@ -80,7 +78,6 @@ class Console internal constructor(private val client: QWeather) {
      */
     suspend fun metricsStatus(id: Id): Result<RequestMetrics> = apiCatching {
         client.httpClient.get("https://${client.apiPlan.host}/metrics/v1/stats") {
-            parameter("key", client.apiKey)
             when (id) {
                 is Id.ProjectId -> parameter("project", id.id)
                 is Id.CredentialId -> parameter("credential", id.id)

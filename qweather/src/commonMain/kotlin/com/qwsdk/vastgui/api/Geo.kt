@@ -78,7 +78,6 @@ class Geo internal constructor(private val client: QWeather) {
         client.httpClient.get {
             url {
                 url("${client.apiPlan.geoHost}/city/lookup")
-                parameter("key", client.apiKey)
                 parameter("location", location.location)
                 parameter("adm", adm)
                 parameter("range", range)
@@ -111,7 +110,6 @@ class Geo internal constructor(private val client: QWeather) {
         client.httpClient.get {
             url {
                 url("${client.apiPlan.geoHost}/city/top")
-                parameter("key", client.apiKey)
                 parameter("range", range)
                 parameter("number", number)
                 parameter("lang", lang)
@@ -146,7 +144,6 @@ class Geo internal constructor(private val client: QWeather) {
         client.httpClient.get {
             url {
                 url("${client.apiPlan.geoHost}/poi/lookup")
-                parameter("key", client.apiKey)
                 parameter("location", location.location)
                 parameter("type", type)
                 parameter("city", city)
@@ -181,7 +178,6 @@ class Geo internal constructor(private val client: QWeather) {
         check(radius in 1..50) { "无效的数量: $radius, 可用的范围：1-50!" }
         client.httpClient.get {
             url("${client.apiPlan.geoHost}/poi/range")
-            parameter("key", client.apiKey)
             parameter("location", location.location)
             parameter("type", type)
             parameter("radius", radius)

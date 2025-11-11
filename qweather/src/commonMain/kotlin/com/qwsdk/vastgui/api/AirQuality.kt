@@ -68,7 +68,6 @@ class AirQuality internal constructor(private val qweather: QWeather) {
         qweather.httpClient.get {
             url("https://${qweather.apiPlan.host}/airquality/v1/current/${location.latitude}/${location.longitude}")
             parameter("lang", lang)
-            parameter("key", qweather.apiKey)
         }.body()
     }
 
@@ -93,7 +92,6 @@ class AirQuality internal constructor(private val qweather: QWeather) {
         qweather.httpClient.get {
             url("https://${qweather.apiPlan.host}/airquality/v1/hourly/${location.latitude}/${location.longitude}")
             parameter("lang", lang)
-            parameter("key", qweather.apiKey)
         }.body()
     }
 
@@ -118,7 +116,6 @@ class AirQuality internal constructor(private val qweather: QWeather) {
         qweather.httpClient.get {
             url("https://${qweather.apiPlan.host}/airquality/v1/daily/${location.latitude}/${location.longitude}")
             parameter("lang", lang)
-            parameter("key", qweather.apiKey)
         }.body()
     }
 
@@ -142,7 +139,6 @@ class AirQuality internal constructor(private val qweather: QWeather) {
         qweather.httpClient.get {
             url("https://${qweather.apiPlan.host}/airquality/v1/station/${location.location}")
             parameter("lang", lang)
-            parameter("key", qweather.apiKey)
         }.body()
     }
 }
