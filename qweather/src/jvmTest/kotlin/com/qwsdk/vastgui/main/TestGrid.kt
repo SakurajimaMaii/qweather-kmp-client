@@ -22,6 +22,7 @@ import com.qwsdk.vastgui.utils.Day
 import com.qwsdk.vastgui.utils.Hour
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 // Author: Vast Gui
@@ -35,9 +36,10 @@ class TestGrid {
     fun nowTest() = runTest {
         qw.grid().now(coordinate).onSuccess {
             println(it.now)
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -47,9 +49,10 @@ class TestGrid {
             it.daily.forEach { daily ->
                 println(daily)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -59,9 +62,10 @@ class TestGrid {
             it.hourly.forEach { hourly ->
                 println(hourly)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

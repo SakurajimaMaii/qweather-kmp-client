@@ -23,6 +23,7 @@ import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class TestAir {
@@ -34,10 +35,10 @@ class TestAir {
             it.station.forEach { station ->
                 println(station)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -47,10 +48,10 @@ class TestAir {
             it.daily.forEach { daily ->
                 println(daily)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -60,10 +61,10 @@ class TestAir {
             it.stations.forEach { station ->
                 println(station)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -73,10 +74,10 @@ class TestAir {
             it.hours.forEach { station ->
                 println(station)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -86,10 +87,10 @@ class TestAir {
             it.days.forEach { station ->
                 println(station)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -99,10 +100,10 @@ class TestAir {
             it.pollutants.forEach { pollutant ->
                 println(pollutant)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

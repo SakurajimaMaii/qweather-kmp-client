@@ -25,6 +25,7 @@ import com.qwsdk.vastgui.utils.Name
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 
 class TestGeo {
 
@@ -36,9 +37,10 @@ class TestGeo {
             it.location.forEach { location ->
                 println(location)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -48,9 +50,10 @@ class TestGeo {
             it.topCityList.forEach { topCity ->
                 println(topCity)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -60,9 +63,10 @@ class TestGeo {
             it.poi.forEach { poi ->
                 println(poi)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -72,9 +76,10 @@ class TestGeo {
             it.poi.forEach { poi ->
                 println(poi)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

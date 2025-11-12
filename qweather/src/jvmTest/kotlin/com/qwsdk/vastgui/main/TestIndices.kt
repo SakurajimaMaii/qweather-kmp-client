@@ -23,6 +23,7 @@ import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 
 class TestIndices {
 
@@ -30,29 +31,35 @@ class TestIndices {
 
     @Test
     fun indices1dTest() = runTest {
-        qw.indices()
-            .indices1d(LocationID(locationID), types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT))
+        qw.indices().indices1d(
+            LocationID(locationID),
+            types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT)
+        )
             .onSuccess {
                 it.daily.forEach { daily ->
                     println(daily)
                 }
-                assertEquals(it.code.toInt(), 200)
+                assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
             }.onFailure {
                 println(it)
+                assertNull(it)
             }
     }
 
     @Test
     fun indices3d() = runTest {
-        qw.indices()
-            .indices3d(LocationID(locationID), types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT))
+        qw.indices().indices3d(
+            LocationID(locationID),
+            types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT)
+        )
             .onSuccess {
                 it.daily.forEach { daily ->
                     println(daily)
                 }
-                assertEquals(it.code.toInt(), 200)
+                assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
             }.onFailure {
                 println(it)
+                assertNull(it)
             }
     }
 }

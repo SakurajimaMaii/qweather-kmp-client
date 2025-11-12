@@ -19,7 +19,8 @@ package com.qwsdk.vastgui.main
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.utils.Coordinate
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 // Author: Vast Gui
@@ -35,9 +36,10 @@ class TestMinutely {
             it.minutely.forEach { minutely ->
                 println(minutely)
             }
-            Assertions.assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

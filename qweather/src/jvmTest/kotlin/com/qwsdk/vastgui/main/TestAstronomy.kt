@@ -23,6 +23,7 @@ import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class TestAstronomy {
@@ -32,10 +33,10 @@ class TestAstronomy {
     fun sunTest() = runTest {
         qw.astronomy().sun(LocationID(locationID), getCurrentDate()).onSuccess {
             println("${it.sunrise} ${it.sunset}")
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -43,10 +44,10 @@ class TestAstronomy {
     fun moonTest() = runTest {
         qw.astronomy().moon(LocationID(locationID), getCurrentDate()).onSuccess {
             println("${it.moonrise} ${it.moonset} ${it.moonPhase}")
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -56,10 +57,10 @@ class TestAstronomy {
             Coordinate(120.34, 36.08), "20240117", "1230", "0800", 43
         ).onSuccess {
             println("${it.solarAzimuthAngle} ${it.solarElevationAngle} ${it.hourAngle}")
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

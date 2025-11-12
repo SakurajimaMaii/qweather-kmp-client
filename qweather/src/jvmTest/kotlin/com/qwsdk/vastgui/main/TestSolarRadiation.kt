@@ -37,7 +37,7 @@ class TestSolarRadiation {
                 it.radiation.forEach { radiation ->
                     println(radiation)
                 }
-                assertEquals(it.code.toInt(), 200)
+                assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
             }
             .onFailure {
                 println(it)

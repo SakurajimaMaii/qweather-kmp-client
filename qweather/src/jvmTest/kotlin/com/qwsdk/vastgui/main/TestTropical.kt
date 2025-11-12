@@ -20,6 +20,7 @@ import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.getCurrentYear
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class TestTropical {
@@ -30,10 +31,10 @@ class TestTropical {
                 it.forecast.forEach { forecast ->
                     println(forecast)
                 }
-                assertEquals(it.code.toInt(), 200)
+                assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
             }.onFailure {
                 println(it)
-                assertEquals(true, false)
+                assertNull(it)
             }
         }
     }
@@ -45,10 +46,10 @@ class TestTropical {
                 it.track.forEach { track ->
                     println(track)
                 }
-                assertEquals(it.code.toInt(), 200)
+                assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
             }.onFailure {
                 println(it)
-                assertEquals(true, false)
+                assertNull(it)
             }
         }
     }
@@ -59,10 +60,10 @@ class TestTropical {
             it.storm.forEach { track ->
                 println(track)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
-            assertEquals(true, false)
+            assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

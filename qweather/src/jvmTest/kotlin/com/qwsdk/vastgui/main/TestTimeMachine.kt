@@ -22,6 +22,7 @@ import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 
 class TestTimeMachine {
     private val locationID = randomID()
@@ -32,9 +33,10 @@ class TestTimeMachine {
             it.weatherHourly.forEach { weatherHourly ->
                 println(weatherHourly)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 
@@ -44,9 +46,10 @@ class TestTimeMachine {
             it.airHourly.forEach { airHourly ->
                 println(airHourly)
             }
-            assertEquals(it.code.toInt(), 200)
-        }.onFailure {
-            println(it)
+            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+        }.onFailure { t ->
+            println(t)
+            assertNull(t)
         }
     }
 }

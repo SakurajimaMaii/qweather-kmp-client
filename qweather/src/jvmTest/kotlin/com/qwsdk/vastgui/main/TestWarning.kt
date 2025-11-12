@@ -18,23 +18,44 @@ package com.qwsdk.vastgui.main
 
 import com.qwsdk.vastgui.QWeather.CountryCode
 import com.qwsdk.vastgui.qw
+import com.qwsdk.vastgui.utils.Coordinate
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 class TestWarning {
     @Test
-    fun nowTest() = runTest {
-        qw.warning().list(CountryCode.CN).getOrNull()?.warningLocList?.get(0)?.getLocationID()?.run {
-            qw.warning().now(this).onSuccess {
-                it.warning.forEach { warning ->
-                    println(warning)
-                }
-                assertEquals(it.code.toInt(), 200)
-            }.onFailure {
-                println(it)
-            }
+    fun currentTest() = runTest {
+        qw.warning().current(Coordinate(117.20, 39.10)).onSuccess {
+            println(it.alerts.joinToString())
+            assertEquals(
+                200,
+                if (it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status
+            )
+        }.onFailure {
+            println(it)
+            assertNull(it)
         }
+    }
+
+    @Test
+    fun nowTest() = runTest {
+        qw.warning().list(CountryCode.CN).getOrNull()?.warningLocList?.get(0)?.getLocationID()
+            ?.run {
+                qw.warning().now(this).onSuccess {
+                    it.warning.forEach { warning ->
+                        println(warning)
+                    }
+                    assertEquals(
+                        200,
+                        if (it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status
+                    )
+                }.onFailure {
+                    println(it)
+                    assertNull(it)
+                }
+            }
     }
 
     @Test
@@ -43,9 +64,13 @@ class TestWarning {
             it.warningLocList.forEach { warningLocList ->
                 println(warningLocList)
             }
-            assertEquals(it.code.toInt(), 200)
+            assertEquals(
+                200,
+                if (it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status
+            )
         }.onFailure {
             println(it)
+            assertNull(it)
         }
     }
 }
