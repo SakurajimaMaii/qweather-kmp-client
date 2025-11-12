@@ -5,6 +5,8 @@ package com.qwsdk.vastgui.utils.sign
 // Date: 2025/11/11
 // Reference:
 
-actual fun getJwtSigner(keyId: String, projectId: String, privateKey: String): JwtSigner {
-    TODO("Not yet implemented")
-}
+/**
+ * @since 1.1.3
+ */
+actual fun getJwtSigner(keyId: String, projectId: String, privateKey: String): JwtSigner =
+    AndroidEd25519Signer(keyId, projectId, privateKey)

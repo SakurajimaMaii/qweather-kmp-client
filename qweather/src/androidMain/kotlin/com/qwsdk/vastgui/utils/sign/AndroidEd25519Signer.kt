@@ -7,13 +7,13 @@ import java.security.spec.PKCS8EncodedKeySpec
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
-// Date: 2025/11/11
+// Date: 2025/11/12
 // Reference:
 
 /**
  * @since 1.1.3
  */
-class JvmEd25519Signer(
+class AndroidEd25519Signer(
     override val keyId: String,
     override val projectId: String,
     override val privateKey: String
@@ -23,7 +23,10 @@ class JvmEd25519Signer(
         privateKey.replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
             .replace("\n", "").trim()
-            .let { KeyFactory.getInstance("EdDSA").generatePrivate(PKCS8EncodedKeySpec(it.decodeBase64Bytes())) }
+            .let {
+                KeyFactory.getInstance("EdDSA")
+                    .generatePrivate(PKCS8EncodedKeySpec(it.decodeBase64Bytes()))
+            }
     }
 
     override suspend fun getSign(data: ByteArray): ByteArray {
