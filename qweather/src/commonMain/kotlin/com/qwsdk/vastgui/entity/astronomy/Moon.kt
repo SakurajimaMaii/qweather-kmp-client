@@ -19,7 +19,6 @@ package com.qwsdk.vastgui.entity.astronomy
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
 import com.qwsdk.vastgui.entity.Refer
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -40,15 +39,15 @@ import kotlinx.serialization.Serializable
  * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)。
  */
 @Serializable
-@OptIn(ExperimentalSerializationApi::class)
 data class Moon(
     val fxLink: String? = null,
     val moonPhase: List<MoonPhase> = emptyList(),
     val moonrise: String? = null,
     val moonset: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val updateTime: String? = null,
-    val code: String = "",
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -65,10 +64,10 @@ data class Moon(
      */
     @Serializable
     data class MoonPhase(
-        val fxTime: String,
-        val icon: String,
-        val illumination: String,
-        val name: String,
-        val value: String
+        val fxTime: String? = null,
+        val icon: String? = null,
+        val illumination: String? = null,
+        val name: String? = null,
+        val value: String? = null
     )
 }

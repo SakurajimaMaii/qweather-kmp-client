@@ -35,7 +35,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class StormTrack(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val fxLink: String? = null,
     val isActive: String? = null,
     val now: Now? = null,

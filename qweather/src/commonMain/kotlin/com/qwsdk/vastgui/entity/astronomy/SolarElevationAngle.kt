@@ -37,10 +37,11 @@ import kotlinx.serialization.Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class SolarElevationAngle(
     val hourAngle: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val solarAzimuthAngle: String? = null,
     val solarElevationAngle: String? = null,
     val solarHour: String? = null,
-    val code: String = "",
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse

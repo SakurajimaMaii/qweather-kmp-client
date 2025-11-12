@@ -32,7 +32,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Indices(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val daily: List<Daily> = emptyList(),
     val fxLink: String? = null,
     val refer: Refer = Refer(),

@@ -1,24 +1,8 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.qwsdk.vastgui.entity.ocean
 
-package com.qwsdk.vastgui.entity.ocean.tide
-
-import com.qwsdk.vastgui.entity.Refer
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.Refer
 import kotlinx.serialization.Serializable
 
 /**
@@ -29,16 +13,17 @@ import kotlinx.serialization.Serializable
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property tideHourly 参考 [TideHourly] 。
  * @property tideTable 参考 [TideTable] 。
- * @property refer 参考 [Refer] 。
+ * @property refer 参考 [com.qwsdk.vastgui.entity.Refer] 。
  */
 @Serializable
 data class Tide(
-    val code: String = "",
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val tideHourly: List<TideHourly> = emptyList(),
     val tideTable: List<TideTable> = emptyList(),
     val updateTime: String? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**

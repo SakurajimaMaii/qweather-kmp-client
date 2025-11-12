@@ -42,10 +42,11 @@ import kotlinx.serialization.Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class Sun(
     val fxLink: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val sunrise: String? = null,
     val sunset: String? = null,
     val updateTime: String? = null,
-    val code: String = "",
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse

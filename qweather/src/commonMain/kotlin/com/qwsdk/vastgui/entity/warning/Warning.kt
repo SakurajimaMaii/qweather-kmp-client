@@ -30,13 +30,18 @@ import kotlinx.serialization.Serializable
  * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
  * @property warning 参考 [Warning] ，如果查询的地区当前没有灾害预警信息，返回的warning字段为空。
  */
+@Deprecated(
+    message = "当前 API 已弃用，预计在 2026 年 10 月 1 日停止服务。",
+    level = DeprecationLevel.WARNING
+)
 @Serializable
 data class Warning(
-    val code: String = "",
     val fxLink: String? = null,
     val refer: Refer = Refer(),
     val updateTime: String? = null,
     val warning: List<Warning> = emptyList(),
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**

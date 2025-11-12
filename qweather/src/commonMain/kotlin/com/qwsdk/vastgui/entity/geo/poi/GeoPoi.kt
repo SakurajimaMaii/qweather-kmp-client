@@ -30,7 +30,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class GeoPoi(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val poi: List<Poi> = emptyList(),
     val refer: Refer = Refer(),
     override val error: ErrorInfo? = null

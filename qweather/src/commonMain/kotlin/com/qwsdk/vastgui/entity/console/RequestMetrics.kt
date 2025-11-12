@@ -23,6 +23,8 @@ data class RequestMetrics(
     val errors: List<Error>? = null,
     val metadata: Metadata? = null,
     val success: List<Success>? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -34,11 +36,11 @@ data class RequestMetrics(
      * @since 1.1.3
      */
     @Serializable
-    data class Error(val api: String, val hours: List<Int>)
+    data class Error(val api: String? = null, val hours: List<Int> = emptyList())
 
     /** @since 1.1.3 */
     @Serializable
-    data class Metadata(val tag: String)
+    data class Metadata(val tag: String? = null)
 
     /**
      * 成功请求的 API 。
@@ -49,5 +51,5 @@ data class RequestMetrics(
      * @since 1.1.3
      */
     @Serializable
-    data class Success(val api: String, val hours: List<Int>)
+    data class Success(val api: String? = null, val hours: List<Int> = emptyList())
 }

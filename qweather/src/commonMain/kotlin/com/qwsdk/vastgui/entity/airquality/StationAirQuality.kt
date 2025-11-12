@@ -1,20 +1,4 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.qwsdk.vastgui.entity.airquality.station
+package com.qwsdk.vastgui.entity.airquality
 
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
@@ -32,10 +16,11 @@ import kotlinx.serialization.Serializable
  * @since 1.1.3
  */
 @Serializable
-data class AirQualityStationBean(
+data class StationAirQuality(
     val metadata: Metadata? = null,
     val pollutants: List<Pollutant> = emptyList(),
-    val code: String = "",
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
 
@@ -48,7 +33,7 @@ data class AirQualityStationBean(
      */
     @Serializable
     data class Metadata(
-        val tag: String = "",
+        val tag: String? = null,
         val sources: List<String> = emptyList()
     )
 
@@ -65,10 +50,10 @@ data class AirQualityStationBean(
      */
     @Serializable
     data class Pollutant(
-        val code: String = "",
-        val name: String = "",
-        val fullName: String = "",
-        val concentration: Concentration = Concentration()
+        val code: String? = null,
+        val name: String? = null,
+        val fullName: String? = null,
+        val concentration: Concentration? = null
     )
 
     /**
@@ -79,8 +64,5 @@ data class AirQualityStationBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Concentration(
-        val value: Double = 0.0,
-        val unit: String = ""
-    )
+    data class Concentration(val value: Double? = null, val unit: String? = null)
 }

@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 // Date: 2025/11/7
 
 /**
- * 账单汇总信息。
+ * [财务汇总](https://dev.qweather.com/docs/api/console/finance/) 。
  *
  * @property accruedCharges 应计费用信息。
  * @property asOf 当前数据的截止日期。
@@ -26,24 +26,18 @@ import kotlinx.serialization.Serializable
 @Serializable
 @OptIn(ExperimentalSerializationApi::class)
 data class FinanceSummary(
-    @EncodeDefault
-    val accruedCharges: AccruedCharges = AccruedCharges(),
-    @EncodeDefault
-    val asOf: String = "",
-    @EncodeDefault
+    val accruedCharges: AccruedCharges? = null,
+    val asOf: String? = null,
     val availableResourcePlans: List<AvailableResourcePlan> = emptyList(),
-    @EncodeDefault
     val availableSavingsPlans: List<AvailableSavingsPlan> = emptyList(),
-    @EncodeDefault
-    val balance: Double = 0.0,
-    @EncodeDefault
-    val currency: String = "",
-    @EncodeDefault
-    val metadata: Metadata = Metadata(),
-    @EncodeDefault
+    val balance: Double? = null,
+    val currency: String? = null,
+    val metadata: Metadata? = null,
     val pendingBills: List<PendingBill> = emptyList(),
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
-): BaseResponse {
+) : BaseResponse {
 
     /**
      * 应计费用信息。
@@ -55,12 +49,9 @@ data class FinanceSummary(
      */
     @Serializable
     data class AccruedCharges(
-        @EncodeDefault
-        val previousDay: Double = 0.0,
-        @EncodeDefault
-        val thisMonth: Double = 0.0,
-        @EncodeDefault
-        val sinceLastBill: Double = 0.0
+        val previousDay: Double? = null,
+        val thisMonth: Double? = null,
+        val sinceLastBill: Double? = null
     )
 
     /**
@@ -76,18 +67,12 @@ data class FinanceSummary(
      */
     @Serializable
     data class AvailableSavingsPlan(
-        @EncodeDefault
-        val billNumber: String = "",
-        @EncodeDefault
-        val status: String = "",
-        @EncodeDefault
-        val term: String = "",
-        @EncodeDefault
-        val commitments: Int = 0,
-        @EncodeDefault
-        val utilized: Int = 0,
-        @EncodeDefault
-        val effectiveTime: String = ""
+        val billNumber: String? = null,
+        val status: String? = null,
+        val term: String? = null,
+        val commitments: Int? = null,
+        val utilized: Int? = null,
+        val effectiveTime: String? = null
     )
 
     /**
@@ -102,16 +87,11 @@ data class FinanceSummary(
      */
     @Serializable
     data class AvailableResourcePlan(
-        @EncodeDefault
-        val billNumber: String = "",
-        @EncodeDefault
-        val status: String = "",
-        @EncodeDefault
-        val requests: Int = 0,
-        @EncodeDefault
-        val utilized: Int = 0,
-        @EncodeDefault
-        val effectiveTime: String = ""
+        val billNumber: String? = null,
+        val status: String? = null,
+        val requests: Int? = null,
+        val utilized: Int? = null,
+        val effectiveTime: String? = null
     )
 
     /**
@@ -121,10 +101,7 @@ data class FinanceSummary(
      * @since 1.1.3
      */
     @Serializable
-    data class Metadata(
-        @EncodeDefault
-        val tag: String = ""
-    )
+    data class Metadata(val tag: String? = null)
 
     /**
      * 待支付账单信息。
@@ -140,19 +117,12 @@ data class FinanceSummary(
      */
     @Serializable
     data class PendingBill(
-        @EncodeDefault
-        val number: String = "",
-        @EncodeDefault
-        val type: String = "",
-        @EncodeDefault
-        val amount: Double = 0.0,
-        @EncodeDefault
-        val amountDue: Double = 0.0,
-        @EncodeDefault
-        val date: String = "",
-        @EncodeDefault
-        val dueDate: String = "",
-        @EncodeDefault
-        val status: String = ""
+        val number: String? = null,
+        val type: String? = null,
+        val amount: Double? = null,
+        val amountDue: Double? = null,
+        val date: String? = null,
+        val dueDate: String? = null,
+        val status: String? = null
     )
 }

@@ -1,24 +1,10 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.qwsdk.vastgui.entity.historical
 
-package com.qwsdk.vastgui.entity.historical.weather
-
-import com.qwsdk.vastgui.entity.Refer
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.Refer
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
@@ -26,17 +12,19 @@ import kotlinx.serialization.Serializable
  *
  * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
- * @property refer 参考 [Refer] 。
+ * @property refer 参考 [com.qwsdk.vastgui.entity.Refer] 。
  * @property weatherDaily 参考 [weatherDaily] 。
  * @property weatherHourly 参考 [WeatherHourly] 。
  */
 @Serializable
+@OptIn(ExperimentalSerializationApi::class)
 data class HistoricalWeather(
-    val code: String = "",
     val fxLink: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val weatherDaily: WeatherDaily? = null,
     val weatherHourly: List<WeatherHourly> = emptyList(),
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -56,17 +44,17 @@ data class HistoricalWeather(
      */
     @Serializable
     data class WeatherDaily(
-        val date: String,
-        val humidity: String,
-        val moonPhase: String,
-        val moonrise: String,
-        val moonset: String,
-        val precip: String,
-        val pressure: String,
-        val sunrise: String,
-        val sunset: String,
-        val tempMax: String,
-        val tempMin: String
+        val date: String? = null,
+        val humidity: String? = null,
+        val moonPhase: String? = null,
+        val moonrise: String? = null,
+        val moonset: String? = null,
+        val precip: String? = null,
+        val pressure: String? = null,
+        val sunrise: String? = null,
+        val sunset: String? = null,
+        val tempMax: String? = null,
+        val tempMin: String? = null
     )
 
     /**
@@ -87,16 +75,16 @@ data class HistoricalWeather(
      */
     @Serializable
     data class WeatherHourly(
-        val humidity: String,
-        val icon: String,
-        val precip: String,
-        val pressure: String,
-        val temp: String,
-        val text: String,
-        val time: String,
-        val wind360: String,
-        val windDir: String,
-        val windScale: String,
-        val windSpeed: String
+        val humidity: String? = null,
+        val icon: String? = null,
+        val precip: String? = null,
+        val pressure: String? = null,
+        val temp: String? = null,
+        val text: String? = null,
+        val time: String? = null,
+        val wind360: String? = null,
+        val windDir: String? = null,
+        val windScale: String? = null,
+        val windSpeed: String? = null
     )
 }

@@ -22,7 +22,7 @@ import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
- * [太阳辐射逐小时预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-hourly-forecast/)
+ * [太阳辐射逐小时预报](https://dev.qweather.com/docs/api/solar-radiation/webapi-v7-solar-radiation-hourly-forecast/) 。
  *
  * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property radiation 参考 [Radiation] 。
@@ -35,7 +35,8 @@ import kotlinx.serialization.Serializable
     level = DeprecationLevel.WARNING
 )
 data class SolarRadiation(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val radiation: List<Radiation> = emptyList(),
     val refer: Refer,
     val updateTime: String,

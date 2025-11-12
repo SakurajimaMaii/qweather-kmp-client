@@ -33,7 +33,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class GeoLookup(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val location: List<Location> = emptyList(),
     val refer: Refer = Refer(),
     override val error: ErrorInfo? = null

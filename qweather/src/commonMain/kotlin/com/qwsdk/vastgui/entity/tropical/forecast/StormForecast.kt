@@ -32,7 +32,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class StormForecast(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val forecast: List<Forecast> = emptyList(),
     val fxLink: String? = null,
     val refer: Refer = Refer(),

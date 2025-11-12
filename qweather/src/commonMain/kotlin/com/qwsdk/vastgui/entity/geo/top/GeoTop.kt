@@ -33,7 +33,8 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class GeoTop(
-    val code: String = "",
+        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     val refer: Refer = Refer(),
     val topCityList: List<TopCity> = emptyList(),
     override val error: ErrorInfo? = null

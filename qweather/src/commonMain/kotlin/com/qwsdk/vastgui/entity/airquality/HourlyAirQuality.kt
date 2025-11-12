@@ -1,8 +1,7 @@
-package com.qwsdk.vastgui.entity.airquality.hourly
+package com.qwsdk.vastgui.entity.airquality
 
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 // Author: Vast Gui
@@ -18,11 +17,11 @@ import kotlinx.serialization.Serializable
  * @since 1.1.3
  */
 @Serializable
-@OptIn(ExperimentalSerializationApi::class)
-data class AirQualityHourlyBean(
+data class HourlyAirQuality(
     val metadata: Metadata? = null,
     val hours: List<Hour> = emptyList(),
-    val code: String = "",
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
 
@@ -33,9 +32,7 @@ data class AirQualityHourlyBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Metadata(
-        val tag: String
-    )
+    data class Metadata(val tag: String? = null)
 
     /**
      * 每小时空气质量数据。
@@ -49,9 +46,9 @@ data class AirQualityHourlyBean(
      */
     @Serializable
     data class Hour(
-        val forecastTime: String,
-        val indexes: List<Index>,
-        val pollutants: List<Pollutant>
+        val forecastTime: String? = null,
+        val indexes: List<Index> = emptyList(),
+        val pollutants: List<Pollutant> = emptyList()
     ) {
 
         /**
@@ -73,14 +70,14 @@ data class AirQualityHourlyBean(
          */
         @Serializable
         data class Index(
-            val aqi: Double,
-            val aqiDisplay: String,
+            val aqi: Double? = null,
+            val aqiDisplay: String? = null,
             val category: String? = null,
-            val code: String,
-            val color: Color,
-            val health: Health,
+            val code: String? = null,
+            val color: Color? = null,
+            val health: Health? = null,
             val level: String? = null,
-            val name: String,
+            val name: String? = null,
             val primaryPollutant: PrimaryPollutant? = null
         ) {
 
@@ -95,10 +92,10 @@ data class AirQualityHourlyBean(
              */
             @Serializable
             data class Color(
-                val red: Int,
-                val green: Int,
-                val blue: Int,
-                val alpha: Int
+                val red: Int? = null,
+                val green: Int? = null,
+                val blue: Int? = null,
+                val alpha: Float? = null
             )
 
             /**
@@ -112,7 +109,7 @@ data class AirQualityHourlyBean(
             @Serializable
             data class Health(
                 val effect: String? = null,
-                val advice: Advice
+                val advice: Advice? = null
             ) {
 
                 /**
@@ -161,10 +158,10 @@ data class AirQualityHourlyBean(
          */
         @Serializable
         data class Pollutant(
-            val code: String,
-            val name: String,
-            val fullName: String,
-            val concentration: Concentration,
+            val code: String? = null,
+            val name: String? = null,
+            val fullName: String? = null,
+            val concentration: Concentration? = null,
             val subIndexes: List<SubIndex> = emptyList()
         ) {
 
@@ -177,8 +174,8 @@ data class AirQualityHourlyBean(
              */
             @Serializable
             data class Concentration(
-                val value: Double,
-                val unit: String
+                val value: Double? = null,
+                val unit: String? = null
             )
 
             /**
@@ -195,7 +192,7 @@ data class AirQualityHourlyBean(
             data class SubIndex(
                 val code: String? = null,
                 val aqi: Double? = null,
-                val aqiDisplay: String
+                val aqiDisplay: String? = null
             )
         }
     }

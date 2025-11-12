@@ -1,25 +1,7 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.qwsdk.vastgui.entity.airquality.now
+package com.qwsdk.vastgui.entity.airquality
 
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
-import kotlinx.serialization.EncodeDefault
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 // Author: Vast Gui
@@ -27,7 +9,7 @@ import kotlinx.serialization.Serializable
 // Date: 2024/1/16
 
 /**
- * [实时空气质量](https://dev.qweather.com/docs/api/air-quality/air-now/)
+ * [实时空气质量](https://dev.qweather.com/docs/api/air-quality/air-current/)
  *
  * @property metadata 元数据。
  * @property indexes 空气质量指数列表。
@@ -35,14 +17,14 @@ import kotlinx.serialization.Serializable
  * @property stations AQI 关联的监测站信息。
  * @since 1.1.3
  */
-@OptIn(ExperimentalSerializationApi::class)
 @Serializable
-data class AirQualityCurrentBean(
+data class CurrentAirQuality(
     val metadata: Metadata? = null,
     val indexes: List<Index> = emptyList(),
     val pollutants: List<Pollutant> = emptyList(),
     val stations: List<Station> = emptyList(),
-    val code: String = "",
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
 
@@ -51,10 +33,7 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Metadata(
-        @EncodeDefault
-        val tag: String = ""
-    )
+    data class Metadata(val tag: String? = null)
 
     /**
      * 空气质量指数信息。
@@ -75,18 +54,13 @@ data class AirQualityCurrentBean(
      */
     @Serializable
     data class Index(
-        @EncodeDefault
-        val code: String = "",
-        @EncodeDefault
-        val name: String = "",
-        @EncodeDefault
-        val aqi: Int = 0,
-        @EncodeDefault
-        val aqiDisplay: String = "",
+        val code: String? = null,
+        val name: String? = null,
+        val aqi: Int? = null,
+        val aqiDisplay: String? = null,
         val level: String? = null,
         val category: String? = null,
-        @EncodeDefault
-        val color: Color = Color(),
+        val color: Color? = null,
         val primaryPollutant: PrimaryPollutant? = null,
         val health: Health? = null
     )
@@ -102,14 +76,10 @@ data class AirQualityCurrentBean(
      */
     @Serializable
     data class Color(
-        @EncodeDefault
-        val red: Int = 0,
-        @EncodeDefault
-        val green: Int = 0,
-        @EncodeDefault
-        val blue: Int = 0,
-        @EncodeDefault
-        val alpha: Float = 1f
+        val red: Int? = null,
+        val green: Int? = null,
+        val blue: Int? = null,
+        val alpha: Float? = null
     )
 
     /**
@@ -122,11 +92,7 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class PrimaryPollutant(
-        val code: String? = null,
-        val name: String? = null,
-        val fullName: String? = null
-    )
+    data class PrimaryPollutant(val code: String? = null, val name: String? = null, val fullName: String? = null)
 
     /**
      * 健康影响与建议。
@@ -137,11 +103,7 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Health(
-        val effect: String? = null,
-        @EncodeDefault
-        val advice: Advice = Advice()
-    )
+    data class Health(val effect: String? = null, val advice: Advice? = null)
 
     /**
      * 健康建议信息。
@@ -151,10 +113,7 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Advice(
-        val generalPopulation: String? = null,
-        val sensitivePopulation: String? = null
-    )
+    data class Advice(val generalPopulation: String? = null, val sensitivePopulation: String? = null)
 
     /**
      * 污染物信息。
@@ -169,15 +128,10 @@ data class AirQualityCurrentBean(
      */
     @Serializable
     data class Pollutant(
-        @EncodeDefault
-        val code: String = "",
-        @EncodeDefault
-        val name: String = "",
-        @EncodeDefault
-        val fullName: String = "",
-        @EncodeDefault
-        val concentration: Concentration = Concentration(),
-        @EncodeDefault
+        val code: String? = null,
+        val name: String? = null,
+        val fullName: String? = null,
+        val concentration: Concentration? = null,
         val subIndexes: List<SubIndex> = emptyList()
     )
 
@@ -189,12 +143,7 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Concentration(
-        @EncodeDefault
-        val value: Double = 0.0,
-        @EncodeDefault
-        val unit: String = ""
-    )
+    data class Concentration(val value: Double? = null, val unit: String? = null)
 
     /**
      * 污染物分指数信息。
@@ -205,12 +154,7 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class SubIndex(
-        val code: String? = null,
-        val aqi: Int? = null,
-        @EncodeDefault
-        val aqiDisplay: String = ""
-    )
+    data class SubIndex(val code: String? = null, val aqi: Int? = null, val aqiDisplay: String? = null)
 
     /**
      * AQI 监测站信息。
@@ -220,8 +164,5 @@ data class AirQualityCurrentBean(
      * @since 1.1.3
      */
     @Serializable
-    data class Station(
-        val id: String? = null,
-        val name: String? = null
-    )
+    data class Station(val id: String? = null, val name: String? = null)
 }

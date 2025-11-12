@@ -5,7 +5,7 @@ import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
- * [太阳辐射预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-forecast/)
+ * [太阳辐射预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-forecast/) 。
  *
  * @property forecasts 太阳辐射预报数据列表。
  * @property metadata 元数据，包含数据标签等信息。

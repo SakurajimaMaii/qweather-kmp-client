@@ -1,47 +1,32 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.qwsdk.vastgui.entity.air
 
-package com.qwsdk.vastgui.entity.air.now
-
-import com.qwsdk.vastgui.entity.Refer
 import com.qwsdk.vastgui.entity.BaseResponse
 import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.Refer
 import kotlinx.serialization.Serializable
 
 /**
- * [实时空气质量](https://dev.qweather.com/docs/api/air/air-now/)
+ * [实时空气质量](https://dev.qweather.com/docs/api/air-quality/webapi-v7-air-now/) 。
  *
  * @property code 请参考
  * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property now 参考 [Now] 。
- * @property refer 参考 [Refer] 。
+ * @property refer 参考 [com.qwsdk.vastgui.entity.Refer] 。
  * @property station 参考 [Station] 。
  * @property updateTime 当前
  * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
  * 。
  */
 @Serializable
-data class AirNow(
-    val code: String = "",
+data class NowAir(
     val fxLink: String? = null,
     val now: Now? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val station: List<Station> = emptyList(),
     val updateTime: String? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -61,17 +46,17 @@ data class AirNow(
      */
     @Serializable
     data class Now(
-        val aqi: String,
-        val category: String,
-        val co: String,
-        val level: String,
-        val no2: String,
-        val o3: String,
-        val pm10: String,
-        val pm2p5: String,
-        val primary: String,
-        val pubTime: String,
-        val so2: String
+        val aqi: String? = null,
+        val category: String? = null,
+        val co: String? = null,
+        val level: String? = null,
+        val no2: String? = null,
+        val o3: String? = null,
+        val pm10: String? = null,
+        val pm2p5: String? = null,
+        val primary: String? = null,
+        val pubTime: String? = null,
+        val so2: String? = null
     )
 
     /**
@@ -93,18 +78,18 @@ data class AirNow(
      */
     @Serializable
     data class Station(
-        val aqi: String,
-        val category: String,
-        val co: String,
-        val id: String,
-        val level: String,
-        val name: String,
-        val no2: String,
-        val o3: String,
-        val pm10: String,
-        val pm2p5: String,
-        val primary: String,
-        val pubTime: String,
-        val so2: String
+        val aqi: String? = null,
+        val category: String? = null,
+        val co: String? = null,
+        val id: String? = null,
+        val level: String? = null,
+        val name: String? = null,
+        val no2: String? = null,
+        val o3: String? = null,
+        val pm10: String? = null,
+        val pm2p5: String? = null,
+        val primary: String? = null,
+        val pubTime: String? = null,
+        val so2: String? = null
     )
 }
