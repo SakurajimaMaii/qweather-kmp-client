@@ -19,6 +19,7 @@ package com.qwsdk.vastgui.main
 import com.qwsdk.vastgui.QWeather.Lang
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.randomID
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
@@ -30,12 +31,13 @@ class TestAir {
     private val locationId = randomID()
 
     @Test
+    @Suppress("DEPRECATION")
     fun airTest() = runTest {
         qw.air().now(LocationID(locationId), Lang.EN).onSuccess {
             it.station.forEach { station ->
                 println(station)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -43,12 +45,13 @@ class TestAir {
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun dailyTest() = runTest {
         qw.air().daily(LocationID(locationId), Lang.EN).onSuccess {
             it.daily.forEach { daily ->
                 println(daily)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -61,7 +64,8 @@ class TestAir {
             it.stations.forEach { station ->
                 println(station)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            @Suppress("DEPRECATION")
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -74,7 +78,7 @@ class TestAir {
             it.hours.forEach { station ->
                 println(station)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -87,7 +91,7 @@ class TestAir {
             it.days.forEach { station ->
                 println(station)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -100,7 +104,7 @@ class TestAir {
             it.pollutants.forEach { pollutant ->
                 println(pollutant)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)

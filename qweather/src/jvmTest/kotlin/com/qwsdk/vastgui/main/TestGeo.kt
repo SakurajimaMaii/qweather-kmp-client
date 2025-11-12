@@ -19,6 +19,7 @@ package com.qwsdk.vastgui.main
 import com.qwsdk.vastgui.app.utils.randomID
 import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.QWeather.POIType
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.utils.LocationID
 import com.qwsdk.vastgui.utils.Name
@@ -37,7 +38,7 @@ class TestGeo {
             it.location.forEach { location ->
                 println(location)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -50,7 +51,7 @@ class TestGeo {
             it.topCityList.forEach { topCity ->
                 println(topCity)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -63,7 +64,7 @@ class TestGeo {
             it.poi.forEach { poi ->
                 println(poi)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -76,7 +77,7 @@ class TestGeo {
             it.poi.forEach { poi ->
                 println(poi)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)

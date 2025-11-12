@@ -17,6 +17,7 @@
 package com.qwsdk.vastgui.main
 
 import com.qwsdk.vastgui.api.SolarRadiation
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.Hour
@@ -37,7 +38,7 @@ class TestSolarRadiation {
                 it.radiation.forEach { radiation ->
                     println(radiation)
                 }
-                assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
+                assertEquals(200, it.requireCode())
             }
             .onFailure {
                 println(it)
@@ -48,13 +49,14 @@ class TestSolarRadiation {
     fun solarRadiation() = runTest {
         qw.solarRadiation().radiation(Coordinate(116.41, 39.92), tilt = 30, azimuth = 180, extra = SolarRadiation.SolarRadiationExtra.Poa)
             .onSuccess {
-                it.forecasts?.forEach { radiation ->
+                it.forecasts.forEach { radiation ->
                     println(radiation)
                 }
+                assertEquals(200, it.requireCode())
             }
             .onFailure {
                 println(it)
-                assertEquals(false,true)
+                assertEquals(false, true)
             }
     }
 }

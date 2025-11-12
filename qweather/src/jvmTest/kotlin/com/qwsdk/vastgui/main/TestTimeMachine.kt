@@ -18,6 +18,7 @@ package com.qwsdk.vastgui.main
 
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.randomID
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -33,7 +34,7 @@ class TestTimeMachine {
             it.weatherHourly.forEach { weatherHourly ->
                 println(weatherHourly)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -46,7 +47,7 @@ class TestTimeMachine {
             it.airHourly.forEach { airHourly ->
                 println(airHourly)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)

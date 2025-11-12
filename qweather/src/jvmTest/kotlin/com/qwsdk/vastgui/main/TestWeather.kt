@@ -18,6 +18,7 @@ package com.qwsdk.vastgui.main
 
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.randomID
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.utils.Day
 import com.qwsdk.vastgui.utils.Hour
 import com.qwsdk.vastgui.utils.LocationID
@@ -33,7 +34,7 @@ class TestWeather {
     fun nowTest() = runTest {
         qw.weather().now(LocationID(locationID)).onSuccess {
             println(it.now)
-            assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -46,7 +47,7 @@ class TestWeather {
             it.daily.forEach { daily ->
                 println(daily)
             }
-            assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
@@ -59,7 +60,7 @@ class TestWeather {
             it.hourly.forEach { hourly ->
                 println(hourly)
             }
-            assertEquals(200, if(it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status)
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)

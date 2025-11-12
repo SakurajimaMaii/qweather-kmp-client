@@ -17,6 +17,7 @@
 package com.qwsdk.vastgui.main
 
 import com.qwsdk.vastgui.QWeather.CountryCode
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.utils.Coordinate
 import kotlinx.coroutines.test.runTest
@@ -29,10 +30,7 @@ class TestWarning {
     fun currentTest() = runTest {
         qw.warning().current(Coordinate(117.20, 39.10)).onSuccess {
             println(it.alerts.joinToString())
-            assertEquals(
-                200,
-                if (it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status
-            )
+            assertEquals(200, it.requireCode())
         }.onFailure {
             println(it)
             assertNull(it)
@@ -41,16 +39,16 @@ class TestWarning {
 
     @Test
     fun nowTest() = runTest {
-        qw.warning().list(CountryCode.CN).getOrNull()?.warningLocList?.get(0)?.getLocationID()
+        qw.warning().list(CountryCode.CN).getOrNull()
+            ?.warningLocList
+            ?.get(0)
+            ?.getLocationID()
             ?.run {
                 qw.warning().now(this).onSuccess {
                     it.warning.forEach { warning ->
                         println(warning)
                     }
-                    assertEquals(
-                        200,
-                        if (it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status
-                    )
+                    assertEquals(200, it.requireCode())
                 }.onFailure {
                     println(it)
                     assertNull(it)
@@ -64,10 +62,7 @@ class TestWarning {
             it.warningLocList.forEach { warningLocList ->
                 println(warningLocList)
             }
-            assertEquals(
-                200,
-                if (it.error == null) it.code?.toIntOrNull() ?: 200 else it.error.status
-            )
+            assertEquals(200, it.requireCode())
         }.onFailure {
             println(it)
             assertNull(it)

@@ -16,6 +16,7 @@
 
 package com.qwsdk.vastgui.main
 
+import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.utils.Coordinate
 import kotlinx.coroutines.test.runTest
@@ -36,7 +37,7 @@ class TestMinutely {
             it.minutely.forEach { minutely ->
                 println(minutely)
             }
-            assertEquals(200, if (it.error == null) 200 else it.code?.toInt())
+            assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
             assertNull(t)
