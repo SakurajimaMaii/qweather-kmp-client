@@ -41,22 +41,23 @@ import kotlinx.serialization.Serializable
  * @property type POI（兴趣点）的属性。
  * @property tz POI（兴趣点）所在 [时区](https://dev.qweather.com/docs/resource/glossary/#timezone) 。
  * @property utcOffset 地区/城市目前与 UTC 时间偏移的小时数。
+ * @since 1.1.3
  */
 @Serializable
-data class Poi(
-    val adm1: String,
-    val adm2: String,
-    val country: String,
-    val fxLink: String,
-    val id: String,
-    val isDst: String,
-    val lat: String,
-    val lon: String,
-    val name: String,
-    val rank: String,
-    val type: String,
-    val tz: String,
-    val utcOffset: String
+data class POI(
+    val adm1: String? = null,
+    val adm2: String? = null,
+    val country: String? = null,
+    val fxLink: String? = null,
+    val id: String? = null,
+    val isDst: String? = null,
+    val lat: String? = null,
+    val lon: String? = null,
+    val name: String? = null,
+    val rank: String? = null,
+    val type: String? = null,
+    val tz: String? = null,
+    val utcOffset: String? = null
 ) : GeoLocationID {
-    override fun getLocationID(): LocationID = LocationID(id)
+    override fun getLocationID(): LocationID? = id?.let(::LocationID)
 }

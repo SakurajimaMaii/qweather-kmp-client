@@ -1,8 +1,7 @@
 package com.qwsdk.vastgui.entity.console
 
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
-import kotlinx.serialization.EncodeDefault
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 

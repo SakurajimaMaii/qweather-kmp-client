@@ -1,4 +1,4 @@
-package com.qwsdk.vastgui.entity
+package com.qwsdk.vastgui.entity.base.error
 
 import kotlinx.serialization.Serializable
 
@@ -32,7 +32,7 @@ import kotlinx.serialization.Serializable
 data class ErrorInfo(
     val detail: String = "",
     val invalidParams: List<String> = emptyList(),
-    val status: Int,
-    val title: String,
-    val type: String
+    val status: Int? = null,
+    val title: String? = null,
+    val type: String? = null
 )

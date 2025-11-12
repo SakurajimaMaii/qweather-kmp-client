@@ -32,8 +32,9 @@ internal interface GeoLocationID {
      * 获取 Geo 的 [LocationID] 。
      *
      * @see Geo
+     * @since 1.1.3
      */
-    fun getLocationID(): LocationID
+    fun getLocationID(): LocationID?
 }
 
 /**

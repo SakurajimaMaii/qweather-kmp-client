@@ -16,28 +16,31 @@
 
 package com.qwsdk.vastgui.entity.indices
 
-import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
  * [天气指数预报](https://dev.qweather.com/docs/api/indices/indices-forecast/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property daily 参考 [Daily] 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property refer 参考 [Refer] 。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  */
 @Serializable
 data class Indices(
-        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
-    override val code: String? = null,
     val daily: List<Daily> = emptyList(),
     val fxLink: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val updateTime: String? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -52,11 +55,11 @@ data class Indices(
      */
     @Serializable
     data class Daily(
-        val category: String,
-        val date: String,
-        val level: String,
-        val name: String,
+        val category: String? = null,
+        val date: String? = null,
+        val level: String? = null,
+        val name: String? = null,
         val text: String? = null,
-        val type: String
+        val type: String? = null
     )
 }

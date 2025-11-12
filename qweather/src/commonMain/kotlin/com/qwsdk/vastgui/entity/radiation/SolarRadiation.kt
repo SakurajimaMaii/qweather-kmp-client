@@ -16,18 +16,22 @@
 
 package com.qwsdk.vastgui.entity.radiation
 
-import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
- * [太阳辐射逐小时预报](https://dev.qweather.com/docs/api/solar-radiation/webapi-v7-solar-radiation-hourly-forecast/) 。
+ * [太阳辐射逐小时预报](https://dev.qweather.com/docs/api/solar-radiation/webapi-v7-solar-radiation-hourly-forecast/)
+ * 。
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property radiation 参考 [Radiation] 。
  * @property refer 参考 [Refer] 。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  */
 @Serializable
 @Deprecated(
@@ -35,11 +39,11 @@ import kotlinx.serialization.Serializable
     level = DeprecationLevel.WARNING
 )
 data class SolarRadiation(
-        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
-    override val code: String? = null,
     val radiation: List<Radiation> = emptyList(),
-    val refer: Refer,
-    val updateTime: String,
+    val refer: Refer? = null,
+    val updateTime: String? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -52,9 +56,9 @@ data class SolarRadiation(
      */
     @Serializable
     data class Radiation(
-        val diffuse: String,
-        val direct: String,
-        val fxTime: String,
-        val net: String
+        val diffuse: String? = null,
+        val direct: String? = null,
+        val fxTime: String? = null,
+        val net: String? = null
     )
 }

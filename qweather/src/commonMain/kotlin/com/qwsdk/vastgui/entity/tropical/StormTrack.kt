@@ -1,48 +1,35 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.qwsdk.vastgui.entity.tropical
 
-package com.qwsdk.vastgui.entity.tropical.track
-
-import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 /**
  * [台风实况和路径](https://dev.qweather.com/docs/api/tropical-cyclone/storm-track/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property isActive 是否为活跃台风。1 活跃台风，0 停编。
  * @property now 参考 [Now] ，如果台风已经停止，即 [isActive]=0 ，接口中的 now 字段将不再返回数据 。
  * @property refer 参考 [Refer] 。
  * @property track 参考 [Track] 。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  */
 @Serializable
 data class StormTrack(
-        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
-    override val code: String? = null,
     val fxLink: String? = null,
     val isActive: String? = null,
     val now: Now? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val track: List<Track> = emptyList(),
     val updateTime: String? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -63,18 +50,18 @@ data class StormTrack(
      */
     @Serializable
     data class Now(
-        val lat: String,
-        val lon: String,
-        val move360: String,
-        val moveDir: String,
-        val moveSpeed: String,
-        val pressure: String,
-        val pubTime: String,
-        val type: String,
+        val lat: String? = null,
+        val lon: String? = null,
+        val move360: String? = null,
+        val moveDir: String? = null,
+        val moveSpeed: String? = null,
+        val pressure: String? = null,
+        val pubTime: String? = null,
+        val type: String? = null,
         val windRadius30: WindRadius30? = null,
         val windRadius50: WindRadius30? = null,
         val windRadius64: WindRadius30? = null,
-        val windSpeed: String
+        val windSpeed: String? = null
     )
 
     /**
@@ -96,18 +83,18 @@ data class StormTrack(
     @Serializable
     @OptIn(ExperimentalSerializationApi::class)
     data class Track(
-        val lat: String,
-        val lon: String,
-        val move360: String,
-        val moveDir: String,
-        val moveSpeed: String,
-        val pressure: String,
-        val time: String,
-        val type: String,
+        val lat: String? = null,
+        val lon: String? = null,
+        val move360: String? = null,
+        val moveDir: String? = null,
+        val moveSpeed: String? = null,
+        val pressure: String? = null,
+        val time: String? = null,
+        val type: String? = null,
         val windRadius30: WindRadius30? = null,
         val windRadius50: WindRadius30? = null,
         val windRadius64: WindRadius30? = null,
-        val windSpeed: String
+        val windSpeed: String? = null
     )
 
     /**
@@ -120,9 +107,9 @@ data class StormTrack(
      */
     @Serializable
     data class WindRadius30(
-        val neRadius: String,
-        val nwRadius: String,
-        val seRadius: String,
-        val swRadius: String
+        val neRadius: String? = null,
+        val nwRadius: String? = null,
+        val seRadius: String? = null,
+        val swRadius: String? = null
     )
 }

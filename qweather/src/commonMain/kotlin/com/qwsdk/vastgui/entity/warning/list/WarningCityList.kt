@@ -16,19 +16,22 @@
 
 package com.qwsdk.vastgui.entity.warning.list
 
-import com.qwsdk.vastgui.entity.Refer
+import com.qwsdk.vastgui.entity.base.Refer
 import com.qwsdk.vastgui.utils.GeoLocationID
 import com.qwsdk.vastgui.utils.LocationID
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
  * [天气预警城市列表](https://dev.qweather.com/docs/api/warning/weather-warning-city-list/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property refer 参考 [Refer] 。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  * @property warningLocList 参考 [WarningLoc] 。
  */
 @Deprecated(
@@ -37,7 +40,7 @@ import kotlinx.serialization.Serializable
 )
 @Serializable
 data class WarningCityList(
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val updateTime: String? = null,
     val warningLocList: List<WarningLoc> = emptyList(),
     @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
@@ -51,8 +54,8 @@ data class WarningCityList(
      */
     @Serializable
     data class WarningLoc(
-        val locationId: String
+        val locationId: String? = null
     ) : GeoLocationID {
-        override fun getLocationID(): LocationID = LocationID(locationId)
+        override fun getLocationID(): LocationID? = locationId?.let(::LocationID)
     }
 }

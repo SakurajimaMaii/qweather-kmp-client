@@ -18,9 +18,9 @@ package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
 import com.qwsdk.vastgui.api.base.Api
-import com.qwsdk.vastgui.entity.tropical.forecast.StormForecast
-import com.qwsdk.vastgui.entity.tropical.list.StormList
-import com.qwsdk.vastgui.entity.tropical.track.StormTrack
+import com.qwsdk.vastgui.entity.tropical.StormForecast
+import com.qwsdk.vastgui.entity.tropical.StormList
+import com.qwsdk.vastgui.entity.tropical.StormTrack
 import com.qwsdk.vastgui.utils.StormId
 import com.qwsdk.vastgui.utils.apiCatching
 import io.ktor.client.call.body

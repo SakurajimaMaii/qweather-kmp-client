@@ -1,24 +1,26 @@
 package com.qwsdk.vastgui.entity.ocean
 
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
-import com.qwsdk.vastgui.entity.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import kotlinx.serialization.Serializable
 
 /**
  * [潮汐](https://dev.qweather.com/docs/api/ocean/tide/)
  *
- * @property code 请参考[状态码](https://dev.qweather.com/docs/resource/status-code/)。
- * @property updateTime 当前[API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)。
+ * @property code
+ * 请参考[状态码](https://dev.qweather.com/docs/resource/status-code/)。
+ * @property updateTime
+ * 当前[API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property tideHourly 参考 [TideHourly] 。
  * @property tideTable 参考 [TideTable] 。
- * @property refer 参考 [com.qwsdk.vastgui.entity.Refer] 。
+ * @property refer 参考 [Refer] 。
  */
 @Serializable
 data class Tide(
     val fxLink: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val tideHourly: List<TideHourly> = emptyList(),
     val tideTable: List<TideTable> = emptyList(),
     val updateTime: String? = null,
@@ -34,8 +36,8 @@ data class Tide(
      */
     @Serializable
     data class TideHourly(
-        val fxTime: String,
-        val height: String
+        val fxTime: String? = null,
+        val height: String? = null
     )
 
     /**
@@ -47,8 +49,8 @@ data class Tide(
      */
     @Serializable
     data class TideTable(
-        val fxTime: String,
-        val height: String,
-        val type: String
+        val fxTime: String? = null,
+        val height: String? = null,
+        val type: String? = null
     )
 }

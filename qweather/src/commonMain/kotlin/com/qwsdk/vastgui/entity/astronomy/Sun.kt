@@ -16,9 +16,9 @@
 
 package com.qwsdk.vastgui.entity.astronomy
 
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
-import com.qwsdk.vastgui.entity.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 

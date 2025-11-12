@@ -18,10 +18,10 @@ package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
 import com.qwsdk.vastgui.api.base.Api
-import com.qwsdk.vastgui.entity.geo.lookup.GeoLookup
-import com.qwsdk.vastgui.entity.geo.poi.GeoPoi
-import com.qwsdk.vastgui.entity.geo.poi.range.GeoPoiRange
-import com.qwsdk.vastgui.entity.geo.top.GeoTop
+import com.qwsdk.vastgui.entity.geo.LookupGeo
+import com.qwsdk.vastgui.entity.geo.poi.POIGeo
+import com.qwsdk.vastgui.entity.geo.poi.POIRangeGeo
+import com.qwsdk.vastgui.entity.geo.TopGeo
 import com.qwsdk.vastgui.utils.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -78,7 +78,7 @@ class Geo internal constructor(override val client: QWeather) : Api {
         range: QWeather.CountryCode = QWeather.CountryCode.CN,
         number: Int = 10,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<GeoLookup> = apiCatching {
+    ): Result<LookupGeo> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
         client.httpClient.get("$url/city/lookup") {
             url {
@@ -109,7 +109,7 @@ class Geo internal constructor(override val client: QWeather) : Api {
         range: QWeather.CountryCode = QWeather.CountryCode.CN,
         number: Int = 10,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<GeoTop> = apiCatching {
+    ): Result<TopGeo> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
         client.httpClient.get("$url/city/top") {
             url {
@@ -142,7 +142,7 @@ class Geo internal constructor(override val client: QWeather) : Api {
         city: String? = null,
         number: Int = 10,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<GeoPoi> = apiCatching {
+    ): Result<POIGeo> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
         client.httpClient.get("$url/poi/lookup") {
             url {
@@ -175,7 +175,7 @@ class Geo internal constructor(override val client: QWeather) : Api {
         radius: Int = 5,
         number: Int = 10,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<GeoPoiRange> = apiCatching {
+    ): Result<POIRangeGeo> = apiCatching {
         check(number in 1..20) { "无效的数量: $number, 可用的范围：1-20!" }
         check(radius in 1..50) { "无效的数量: $radius, 可用的范围：1-50!" }
         client.httpClient.get("$url/poi/range") {

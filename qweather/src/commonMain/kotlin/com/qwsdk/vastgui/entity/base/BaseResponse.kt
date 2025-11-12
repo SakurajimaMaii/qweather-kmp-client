@@ -1,8 +1,10 @@
-package com.qwsdk.vastgui.entity
+package com.qwsdk.vastgui.entity.base
+
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
-// Date: 2024/1/16
+// Date: 2025/11/13
 
 /**
  * Base response of api.

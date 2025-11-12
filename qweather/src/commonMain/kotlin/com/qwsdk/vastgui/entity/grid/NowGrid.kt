@@ -1,8 +1,8 @@
 package com.qwsdk.vastgui.entity.grid
 
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
-import com.qwsdk.vastgui.entity.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import kotlinx.serialization.Serializable
 
 /**
@@ -12,16 +12,16 @@ import kotlinx.serialization.Serializable
  * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property now 参考 [Now] 。
- * @property refer 参考 [com.qwsdk.vastgui.entity.Refer] 。
+ * @property refer 参考 [Refer] 。
  * @property updateTime 当前
- * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
- * 。
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)。
+ * @since 1.1.3
  */
 @Serializable
 data class NowGrid(
     val fxLink: String? = null,
     val now: Now? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val updateTime: String? = null,
     @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
     override val code: String? = null,
@@ -52,22 +52,23 @@ data class NowGrid(
      * @property windSpeed
      * [风速](https://dev.qweather.com/docs/resource/wind-info/#wind-speed)
      * ，公里/小时。
+     * @since 1.1.3
      */
     @Serializable
     data class Now(
         val cloud: String? = null,
         val dew: String? = null,
-        val feelsLike: String,
-        val humidity: String,
-        val icon: String,
-        val obsTime: String,
-        val precip: String,
-        val pressure: String,
-        val temp: String,
-        val text: String,
-        val wind360: String,
-        val windDir: String,
-        val windScale: String,
-        val windSpeed: String
+        val feelsLike: String? = null,
+        val humidity: String? = null,
+        val icon: String? = null,
+        val obsTime: String? = null,
+        val precip: String? = null,
+        val pressure: String? = null,
+        val temp: String? = null,
+        val text: String? = null,
+        val wind360: String? = null,
+        val windDir: String? = null,
+        val windScale: String? = null,
+        val windSpeed: String? = null
     )
 }

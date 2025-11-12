@@ -1,11 +1,12 @@
 package com.qwsdk.vastgui.entity.radiation
 
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
- * [太阳辐射预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-forecast/) 。
+ * [太阳辐射预报](https://dev.qweather.com/docs/api/solar-radiation/solar-radiation-forecast/)
+ * 。
  *
  * @property forecasts 太阳辐射预报数据列表。
  * @property metadata 元数据，包含数据标签等信息。
@@ -13,8 +14,10 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class SolarRadiationForecast(
-    val forecasts: List<Forecast>? = null,
+    val forecasts: List<Forecast> = emptyList(),
     val metadata: Metadata? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -26,16 +29,18 @@ data class SolarRadiationForecast(
      * @property poa 组件平面辐照数据。
      * @property solarAngle 太阳角度（方位角和高度角）。
      * @property weather 天气数据（温度、湿度、风速）。
-     * @property forecastTime 预报时间，[ISO8601](https://dev.qweather.com/docs/resource/glossary/#date-time) 格式。
+     * @property forecastTime
+     * 预报时间，[ISO8601](https://dev.qweather.com/docs/resource/glossary/#date-time)
+     * 格式。
      * @since 1.1.3
      */
     @Serializable
     data class Forecast(
-        val dhi: Dhi,
-        val dni: Dni,
-        val ghi: Ghi,
-        val solarAngle: SolarAngle,
-        val forecastTime: String,
+        val dhi: Dhi? = null,
+        val dni: Dni? = null,
+        val ghi: Ghi? = null,
+        val solarAngle: SolarAngle? = null,
+        val forecastTime: String? = null,
         val weather: Weather? = null,
         val poa: Poa? = null,
     ) {
@@ -48,7 +53,7 @@ data class SolarRadiationForecast(
          * @since 1.1.3
          */
         @Serializable
-        data class Dhi(val unit: String, val value: Double)
+        data class Dhi(val unit: String? = null, val value: Double? = null)
 
         /**
          * 法向直接辐照数据。
@@ -58,7 +63,7 @@ data class SolarRadiationForecast(
          * @since 1.1.3
          */
         @Serializable
-        data class Dni(val unit: String, val value: Double)
+        data class Dni(val unit: String? = null, val value: Double? = null)
 
         /**
          * 总水平面辐照数据。
@@ -68,7 +73,7 @@ data class SolarRadiationForecast(
          * @since 1.1.3
          */
         @Serializable
-        data class Ghi(val unit: String, val value: Double)
+        data class Ghi(val unit: String? = null, val value: Double? = null)
 
         /**
          * 组件平面辐照数据（包括散射、直接、总辐照和反射辐照）。
@@ -77,10 +82,10 @@ data class SolarRadiationForecast(
          */
         @Serializable
         data class Poa(
-            val diffuse: Diffuse,
-            val direct: Direct,
-            val global: Global,
-            val reflected: Reflected
+            val diffuse: Diffuse? = null,
+            val direct: Direct? = null,
+            val global: Global? = null,
+            val reflected: Reflected? = null
         ) {
             /**
              * 组件平面散射辐照数据。
@@ -90,7 +95,7 @@ data class SolarRadiationForecast(
              * @since 1.1.3
              */
             @Serializable
-            data class Diffuse(val unit: String, val value: Double)
+            data class Diffuse(val unit: String? = null, val value: Double? = null)
 
             /**
              * 组件平面直接辐照数据。
@@ -100,7 +105,7 @@ data class SolarRadiationForecast(
              * @since 1.1.3
              */
             @Serializable
-            data class Direct(val unit: String, val value: Double)
+            data class Direct(val unit: String? = null, val value: Double? = null)
 
             /**
              * 组件平面总辐照数据。
@@ -110,7 +115,7 @@ data class SolarRadiationForecast(
              * @since 1.1.3
              */
             @Serializable
-            data class Global(val unit: String, val value: Double)
+            data class Global(val unit: String? = null, val value: Double? = null)
 
             /**
              * 组件平面地面反射辐照数据。
@@ -120,7 +125,7 @@ data class SolarRadiationForecast(
              * @since 1.1.3
              */
             @Serializable
-            data class Reflected(val unit: String, val value: Double)
+            data class Reflected(val unit: String? = null, val value: Double? = null)
         }
 
         /**
@@ -131,7 +136,7 @@ data class SolarRadiationForecast(
          * @since 1.1.3
          */
         @Serializable
-        data class SolarAngle(val azimuth: Int, val elevation: Int)
+        data class SolarAngle(val azimuth: Int? = null, val elevation: Int? = null)
 
         /**
          * 天气数据（温度、湿度、风速）。
@@ -139,7 +144,11 @@ data class SolarRadiationForecast(
          * @since 1.1.3
          */
         @Serializable
-        data class Weather(val humidity: Int, val temperature: Temperature, val windSpeed: WindSpeed) {
+        data class Weather(
+            val humidity: Int? = null,
+            val temperature: Temperature? = null,
+            val windSpeed: WindSpeed? = null
+        ) {
             /**
              * 温度数据。
              *
@@ -148,7 +157,7 @@ data class SolarRadiationForecast(
              * @since 1.1.3
              */
             @Serializable
-            data class Temperature(val unit: String, val value: Double)
+            data class Temperature(val unit: String? = null, val value: Double? = null)
 
             /**
              * 风速数据。
@@ -158,7 +167,7 @@ data class SolarRadiationForecast(
              * @since 1.1.3
              */
             @Serializable
-            data class WindSpeed(val unit: String, val value: Double)
+            data class WindSpeed(val unit: String? = null, val value: Double? = null)
         }
     }
 
@@ -169,5 +178,5 @@ data class SolarRadiationForecast(
      * @since 1.1.3
      */
     @Serializable
-    data class Metadata(val tag: String)
+    data class Metadata(val tag: String? = null)
 }

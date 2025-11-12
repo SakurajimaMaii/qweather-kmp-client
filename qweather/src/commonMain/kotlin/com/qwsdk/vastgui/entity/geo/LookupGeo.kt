@@ -1,26 +1,10 @@
-/*
- * Copyright 2024 VastGui
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+package com.qwsdk.vastgui.entity.geo
 
-package com.qwsdk.vastgui.entity.geo.lookup
-
-import com.qwsdk.vastgui.entity.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import com.qwsdk.vastgui.utils.GeoLocationID
 import com.qwsdk.vastgui.utils.LocationID
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
@@ -30,13 +14,14 @@ import kotlinx.serialization.Serializable
  * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property location 参考 [Location] 。
  * @property refer 参考 [Refer] 。
+ * @since 1.1.3
  */
 @Serializable
-data class GeoLookup(
-        @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
-    override val code: String? = null,
+data class LookupGeo(
     val location: List<Location> = emptyList(),
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
     override val error: ErrorInfo? = null
 ) : BaseResponse {
     /**
@@ -59,23 +44,24 @@ data class GeoLookup(
      * @property tz 地区/城市所在
      * [时区](https://dev.qweather.com/docs/resource/glossary/#timezone) 。
      * @property utcOffset 地区/城市目前与UTC时间偏移的小时数。
+     * @since 1.1.3
      */
     @Serializable
     data class Location(
-        val adm1: String,
-        val adm2: String,
-        val country: String,
-        val fxLink: String,
-        val id: String,
-        val isDst: String,
-        val lat: String,
-        val lon: String,
-        val name: String,
-        val rank: String,
-        val type: String,
-        val tz: String,
-        val utcOffset: String
+        val adm1: String? = null,
+        val adm2: String? = null,
+        val country: String? = null,
+        val fxLink: String? = null,
+        val id: String? = null,
+        val isDst: String? = null,
+        val lat: String? = null,
+        val lon: String? = null,
+        val name: String? = null,
+        val rank: String? = null,
+        val type: String? = null,
+        val tz: String? = null,
+        val utcOffset: String? = null
     ) : GeoLocationID {
-        override fun getLocationID(): LocationID = LocationID(id)
+        override fun getLocationID(): LocationID? = id?.let(::LocationID)
     }
 }

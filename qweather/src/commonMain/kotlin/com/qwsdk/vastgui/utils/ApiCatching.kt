@@ -16,7 +16,7 @@
 
 package com.qwsdk.vastgui.utils
 
-import com.qwsdk.vastgui.entity.BaseResponse
+import com.qwsdk.vastgui.entity.base.BaseResponse
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com

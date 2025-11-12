@@ -1,9 +1,8 @@
 package com.qwsdk.vastgui.entity.historical
 
-import com.qwsdk.vastgui.entity.BaseResponse
-import com.qwsdk.vastgui.entity.ErrorInfo
-import com.qwsdk.vastgui.entity.Refer
-import kotlinx.serialization.EncodeDefault
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
@@ -12,7 +11,7 @@ import kotlinx.serialization.Serializable
  *
  * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
- * @property refer 参考 [com.qwsdk.vastgui.entity.Refer] 。
+ * @property refer 参考 [Refer] 。
  * @property weatherDaily 参考 [weatherDaily] 。
  * @property weatherHourly 参考 [WeatherHourly] 。
  */
