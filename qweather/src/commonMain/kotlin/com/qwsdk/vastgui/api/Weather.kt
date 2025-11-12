@@ -17,9 +17,10 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
-import com.qwsdk.vastgui.entity.weather.hourly.WeatherHourly
-import com.qwsdk.vastgui.entity.weather.daily.WeatherDaily
-import com.qwsdk.vastgui.entity.weather.now.WeatherNow
+import com.qwsdk.vastgui.api.base.Api
+import com.qwsdk.vastgui.entity.weather.HourlyWeather
+import com.qwsdk.vastgui.entity.weather.DailyWeather
+import com.qwsdk.vastgui.entity.weather.NowWeather
 import com.qwsdk.vastgui.utils.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -30,7 +31,10 @@ import io.ktor.client.request.*
  * 城市天气预报提供包括中国 3000+ 市县区在内的全球 20万+ 城市的天气预报， 支持实时天气、最多 30 天预报及最多 7
  * 天逐小时天气预报。
  */
-class Weather internal constructor(private val client: QWeather) {
+class Weather internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/weather"
+
     /**
      * [实时天气](https://dev.qweather.com/docs/api/weather/weather-now/)
      *
@@ -52,9 +56,9 @@ class Weather internal constructor(private val client: QWeather) {
         location: Location,
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<WeatherNow> = apiCatching {
+    ): Result<NowWeather> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        client.httpClient.get("weather/now") {
+        client.httpClient.get("$url/now") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -83,12 +87,12 @@ class Weather internal constructor(private val client: QWeather) {
         location: Location,
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<WeatherDaily> = apiCatching {
+    ): Result<DailyWeather> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        val standardRange = client.apiPlan.isStandard()
-        val freeRange = client.apiPlan.isFree() && (Day.Day3 == days || Day.Day7 == days)
+        val standardRange = client.plan.isStandard()
+        val freeRange = client.plan.isFree() && (Day.Day3 == days || Day.Day7 == days)
         check(standardRange || freeRange) { "无效的时间范围，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        client.httpClient.get("weather/${days.range}") {
+        client.httpClient.get("$url/${days.range}") {
             parameter("location", location.location)
             parameter("lang", lang)
             parameter("unit", unit)
@@ -114,12 +118,12 @@ class Weather internal constructor(private val client: QWeather) {
         location: Location,
         unit: QWeather.Units = QWeather.Units.M,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<WeatherHourly> = apiCatching {
+    ): Result<HourlyWeather> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        val standardRange = client.apiPlan.isStandard()
-        val freeRange = client.apiPlan.isFree() && Hour.Hour24 == hours
+        val standardRange = client.plan.isStandard()
+        val freeRange = client.plan.isFree() && Hour.Hour24 == hours
         check(standardRange || freeRange) { "无效的时间范围，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        client.httpClient.get("weather/${hours.range}") {
+        client.httpClient.get("$url/${hours.range}") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)

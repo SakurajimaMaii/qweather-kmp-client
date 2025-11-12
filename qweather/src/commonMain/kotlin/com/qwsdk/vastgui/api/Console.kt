@@ -1,6 +1,7 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
 import com.qwsdk.vastgui.entity.console.FinanceSummary
 import com.qwsdk.vastgui.entity.console.RequestMetrics
 import com.qwsdk.vastgui.utils.apiCatching
@@ -29,10 +30,13 @@ import io.ktor.client.request.parameter
  *
  * @since 1.1.3
  */
-class Console internal constructor(private val client: QWeather) {
+class Console internal constructor(override val client: QWeather) : Api {
+
+    override val url: String
+        get() = TODO("Not yet implemented")
 
     /**
-     * [财务汇总](https://dev.qweather.com/docs/api/console/finance/)
+     * [财务汇总](https://dev.qweather.com/docs/api/console/finance/) 。
      *
      * 查询你的财务和计费的汇总信息。
      *
@@ -50,11 +54,11 @@ class Console internal constructor(private val client: QWeather) {
      */
     @Throws(IllegalStateException::class)
     suspend fun financeSummary(): Result<FinanceSummary> = apiCatching {
-        client.httpClient.get("https://${client.apiPlan.host}/finance/v1/summary").body()
+        client.httpClient.get("/finance/v1/summary").body()
     }
 
     /**
-     * [请求量统计](https://dev.qweather.com/docs/api/console/stats/)
+     * [请求量统计](https://dev.qweather.com/docs/api/console/stats/) 。
      *
      * 查询最近 24 小时的 API 请求量统计。
      *
@@ -77,7 +81,7 @@ class Console internal constructor(private val client: QWeather) {
      * @since 1.1.3
      */
     suspend fun metricsStatus(id: Id): Result<RequestMetrics> = apiCatching {
-        client.httpClient.get("https://${client.apiPlan.host}/metrics/v1/stats") {
+        client.httpClient.get("/metrics/v1/stats") {
             when (id) {
                 is Id.ProjectId -> parameter("project", id.id)
                 is Id.CredentialId -> parameter("credential", id.id)

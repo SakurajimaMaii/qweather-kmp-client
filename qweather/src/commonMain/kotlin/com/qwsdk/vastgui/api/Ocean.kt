@@ -17,8 +17,9 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
-import com.qwsdk.vastgui.entity.ocean.currents.Currents
-import com.qwsdk.vastgui.entity.ocean.tide.Tide
+import com.qwsdk.vastgui.api.base.Api
+import com.qwsdk.vastgui.entity.ocean.Currents
+import com.qwsdk.vastgui.entity.ocean.Tide
 import com.qwsdk.vastgui.utils.DateUtil
 import com.qwsdk.vastgui.utils.LocationID
 import com.qwsdk.vastgui.utils.apiCatching
@@ -35,7 +36,10 @@ import kotlin.time.ExperimentalTime
  *
  * 海洋数据API提供全球主要港口和城市的潮汐和潮流数据。
  */
-class Ocean internal constructor(private val client: QWeather) {
+class Ocean internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/ocean"
+
     /**
      * [潮汐](https://dev.qweather.com/docs/api/ocean/tide/)
      *
@@ -52,11 +56,11 @@ class Ocean internal constructor(private val client: QWeather) {
         location: LocationID,
         date: String
     ): Result<Tide> = apiCatching {
-        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.plan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
         val range = current..current.plus(DatePeriod(days = 9))
         check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
-        client.httpClient.get("ocean/tide") {
+        client.httpClient.get("$url/tide") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)

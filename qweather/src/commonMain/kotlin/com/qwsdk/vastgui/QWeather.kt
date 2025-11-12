@@ -71,7 +71,6 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.plugin
 import io.ktor.http.URLProtocol
-import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -129,8 +128,11 @@ class QWeather private constructor(internal val configuration: Configuration) {
         /** @since 1.1.3 */
         @Deprecated(
             message = "和风天气开发服务使用 JWT(JSON Web Token) 以及 API KEY 的方式进行身份认证。我们推荐使用 JWT 作为首选的身份认证方式，这将极大的提高安全性。",
-            replaceWith = ReplaceWith("QWeather.Configuration(plan,ApiKey(key),logger)",
-                "com.qwsdk.vastgui.QWeather.Plan", "com.qwsdk.vastgui.QWeather.Authentication.ApiKey"),
+            replaceWith = ReplaceWith(
+                "QWeather.Configuration(plan,ApiKey(key),logger)",
+                "com.qwsdk.vastgui.QWeather.Plan",
+                "com.qwsdk.vastgui.QWeather.Authentication.ApiKey"
+            ),
             level = DeprecationLevel.WARNING
         )
         constructor(plan: Plan, key: String, logger: ((String) -> Unit)? = null) {
@@ -149,9 +151,12 @@ class QWeather private constructor(internal val configuration: Configuration) {
 
     companion object Companion : SingletonHolder<QWeather, Configuration>(::QWeather)
 
+    /**
+     * @since 1.1.3
+     */
     @OptIn(ExperimentalTime::class)
     @get:Throws(InvalidDateException::class)
-    internal val apiPlan: Plan
+    internal val plan: Plan
         get() {
             // https://blog.qweather.com/announce/public-api-domain-change-to-api-host/
             val limit = LocalDate(2026, 6, 1).atStartOfDayIn(TimeZone.UTC)
@@ -160,6 +165,9 @@ class QWeather private constructor(internal val configuration: Configuration) {
             return configuration.plan
         }
 
+    /**
+     * @since 1.1.3
+     */
     internal val auth: Authentication = configuration.auth
 
     internal val httpClient: HttpClient = HttpClient {
@@ -167,7 +175,6 @@ class QWeather private constructor(internal val configuration: Configuration) {
             url {
                 protocol = URLProtocol.HTTPS
                 host = configuration.plan.host
-                path("v7/")
             }
         }
         install(Logging) {
@@ -187,7 +194,8 @@ class QWeather private constructor(internal val configuration: Configuration) {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        val token = getJwtSigner(auth.keyId, auth.projectId, auth.privateKey).getJwt()
+                        val token =
+                            getJwtSigner(auth.keyId, auth.projectId, auth.privateKey).getJwt()
                         BearerTokens(token, "")
                     }
                 }
@@ -402,9 +410,7 @@ class QWeather private constructor(internal val configuration: Configuration) {
          * [API Host](https://dev.qweather.com/docs/configuration/api-host/) 来获取。
          * @since 1.1.3
          */
-        class HostApi(host: String) : Plan(host) {
-            override val geoHost: String = "https://${host}/geo/v2"
-        }
+        class HostApi(host: String) : Plan(host)
 
         /**
          * 判断是否是标准版。

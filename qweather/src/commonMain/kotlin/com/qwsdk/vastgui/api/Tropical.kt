@@ -17,6 +17,7 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
 import com.qwsdk.vastgui.entity.tropical.forecast.StormForecast
 import com.qwsdk.vastgui.entity.tropical.list.StormList
 import com.qwsdk.vastgui.entity.tropical.track.StormTrack
@@ -36,9 +37,12 @@ import kotlin.time.ExperimentalTime
  * 热带气旋（台风）API提供全球主要海洋流域的台风信息，包括台风实时位置、等级、气压、
  * 风速，还可查询台风路径和台风预报信息。
  */
-class Tropical internal constructor(private val client: QWeather) {
+class Tropical internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/tropical"
+
     /**
-     * [台风预报](https://dev.qweather.com/docs/api/tropical-cyclone/storm-forecast/)
+     * [台风预报](https://dev.qweather.com/docs/api/tropical-cyclone/storm-forecast/) 。
      *
      * 台风预报 API 提供全球主要海洋流域的台风预测位置、等级、气压、风速等。 如果查询的台风已经结束，则返回的数据为空，建议先通过
      * [台风列表接口][list] 获取台风的状态
@@ -48,8 +52,8 @@ class Tropical internal constructor(private val client: QWeather) {
      */
     @Throws(IllegalStateException::class)
     suspend fun forecast(stormID: StormId): Result<StormForecast> = apiCatching {
-        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        client.httpClient.get("tropical/storm-forecast") {
+        check(client.plan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        client.httpClient.get("$url/storm-forecast") {
             url {
                 parameter("stormid", stormID.id)
             }
@@ -57,7 +61,7 @@ class Tropical internal constructor(private val client: QWeather) {
     }
 
     /**
-     * [台风实况和路径](https://dev.qweather.com/docs/api/tropical-cyclone/storm-track/)
+     * [台风实况和路径](https://dev.qweather.com/docs/api/tropical-cyclone/storm-track/) 。
      *
      * 台风实况和路径API提供全球主要海洋流域的台风实时位置、等级、气压、风速以及活跃台风的轨迹路径。
      *
@@ -66,8 +70,8 @@ class Tropical internal constructor(private val client: QWeather) {
      */
     @Throws(IllegalStateException::class)
     suspend fun track(stormID: StormId): Result<StormTrack> = apiCatching {
-        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
-        client.httpClient.get("tropical/storm-track") {
+        check(client.plan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        client.httpClient.get("$url/storm-track") {
             url {
                 parameter("stormid", stormID.id)
             }
@@ -75,7 +79,7 @@ class Tropical internal constructor(private val client: QWeather) {
     }
 
     /**
-     * [台风列表](https://dev.qweather.com/docs/api/tropical-cyclone/storm-list/)
+     * [台风列表](https://dev.qweather.com/docs/api/tropical-cyclone/storm-list/) 。
      *
      * 台风列表API提供全球主要海洋流域最近2年的台风列表。目前仅支持中国沿海地区，即 [basin]=[QWeather.BasinType.NP] 。
      *
@@ -88,12 +92,14 @@ class Tropical internal constructor(private val client: QWeather) {
         year: String,
         basin: QWeather.BasinType = QWeather.BasinType.NP
     ): Result<StormList> = apiCatching {
-        check(client.apiPlan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
+        check(client.plan.isStandard()) { "无效权限，请参考：https://dev.qweather.com/docs/finance/subscription/#comparison" }
         check(basin == QWeather.BasinType.NP) { "台风列表目前不支持此区域: ${basin.name.lowercase()}!" }
-        val currentYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year.toString().toInt()
+        val currentYear =
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year.toString()
+                .toInt()
         val lastYear = currentYear - 1
-        check(year == currentYear.toString() || year == lastYear.toString()) { "台风列表目前不支持该年份：$year" }
-        client.httpClient.get("tropical/storm-list") {
+        check(year.toInt() in lastYear..currentYear) { "台风列表目前不支持该年份：$year" }
+        client.httpClient.get("$url/storm-list") {
             url {
                 parameter("basin", basin)
                 parameter("year", year)

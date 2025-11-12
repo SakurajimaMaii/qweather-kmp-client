@@ -17,17 +17,17 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
-import com.qwsdk.vastgui.entity.airquality.daily.AirQualityDailyBean
-import com.qwsdk.vastgui.entity.airquality.hourly.AirQualityHourlyBean
-import com.qwsdk.vastgui.entity.airquality.now.AirQualityCurrentBean
-import com.qwsdk.vastgui.entity.airquality.station.AirQualityStationBean
+import com.qwsdk.vastgui.api.base.Api
+import com.qwsdk.vastgui.entity.airquality.DailyAirQuality
+import com.qwsdk.vastgui.entity.airquality.HourlyAirQuality
+import com.qwsdk.vastgui.entity.airquality.CurrentAirQuality
+import com.qwsdk.vastgui.entity.airquality.StationAirQuality
 import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.LocationID
 import com.qwsdk.vastgui.utils.apiCatching
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import io.ktor.client.request.url
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -41,7 +41,9 @@ import io.ktor.client.request.url
  *
  * @since 1.1.3
  */
-class AirQuality internal constructor(private val qweather: QWeather) {
+class AirQuality internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/airquality/v1"
 
     /**
      * [实时空气质量](https://dev.qweather.com/docs/api/air-quality/air-current/)
@@ -64,9 +66,8 @@ class AirQuality internal constructor(private val qweather: QWeather) {
     suspend fun current(
         location: Coordinate,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<AirQualityCurrentBean> = apiCatching {
-        qweather.httpClient.get {
-            url("https://${qweather.apiPlan.host}/airquality/v1/current/${location.latitude}/${location.longitude}")
+    ): Result<CurrentAirQuality> = apiCatching {
+        client.httpClient.get("$url/current/${location.latitude}/${location.longitude}") {
             parameter("lang", lang)
         }.body()
     }
@@ -88,9 +89,8 @@ class AirQuality internal constructor(private val qweather: QWeather) {
     suspend fun hourly(
         location: Coordinate,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<AirQualityHourlyBean> = apiCatching {
-        qweather.httpClient.get {
-            url("https://${qweather.apiPlan.host}/airquality/v1/hourly/${location.latitude}/${location.longitude}")
+    ): Result<HourlyAirQuality> = apiCatching {
+        client.httpClient.get("$url/hourly/${location.latitude}/${location.longitude}") {
             parameter("lang", lang)
         }.body()
     }
@@ -112,9 +112,8 @@ class AirQuality internal constructor(private val qweather: QWeather) {
     suspend fun daily(
         location: Coordinate,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<AirQualityDailyBean> = apiCatching {
-        qweather.httpClient.get {
-            url("https://${qweather.apiPlan.host}/airquality/v1/daily/${location.latitude}/${location.longitude}")
+    ): Result<DailyAirQuality> = apiCatching {
+        client.httpClient.get("$url/daily/${location.latitude}/${location.longitude}") {
             parameter("lang", lang)
         }.body()
     }
@@ -135,9 +134,8 @@ class AirQuality internal constructor(private val qweather: QWeather) {
     suspend fun station(
         location: LocationID,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<AirQualityStationBean> = apiCatching {
-        qweather.httpClient.get {
-            url("https://${qweather.apiPlan.host}/airquality/v1/station/${location.location}")
+    ): Result<StationAirQuality> = apiCatching {
+        client.httpClient.get("$url/station/${location.location}") {
             parameter("lang", lang)
         }.body()
     }

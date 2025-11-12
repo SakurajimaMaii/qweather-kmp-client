@@ -17,6 +17,7 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
 import com.qwsdk.vastgui.entity.astronomy.Moon
 import com.qwsdk.vastgui.entity.astronomy.SolarElevationAngle
 import com.qwsdk.vastgui.entity.astronomy.Sun
@@ -34,7 +35,10 @@ import kotlin.time.ExperimentalTime
  *
  * 天文API提供了全球任意地点未来60天的日出日落、太阳高度角、月升月落和月相数据。
  */
-class Astronomy internal constructor(private val client: QWeather) {
+class Astronomy internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/astronomy"
+
     /**
      * [日出日落](https://dev.qweather.com/docs/api/astronomy/sunrise-sunset/)
      *
@@ -57,7 +61,7 @@ class Astronomy internal constructor(private val client: QWeather) {
         val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
         val range = current..current.plus(DatePeriod(days = 59))
         check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
-        client.httpClient.get("astronomy/sun") {
+        client.httpClient.get("$url/sun") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -88,7 +92,7 @@ class Astronomy internal constructor(private val client: QWeather) {
         val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
         val range = current..current.plus(DatePeriod(days = 59))
         check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
-        client.httpClient.get("astronomy/moon") {
+        client.httpClient.get("$url/moon") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -114,7 +118,7 @@ class Astronomy internal constructor(private val client: QWeather) {
         check(DateUtil.ymdFormat.parseOrNull(date) != null && DateUtil.hmFormat.parseOrNull(time) != null) {
             "时间date=${date}和time=${time}可能无效"
         }
-        client.httpClient.get("astronomy/solar-elevation-angle") {
+        client.httpClient.get("$url/solar-elevation-angle") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
