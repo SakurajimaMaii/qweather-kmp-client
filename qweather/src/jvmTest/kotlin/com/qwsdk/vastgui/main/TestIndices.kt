@@ -35,9 +35,7 @@ class TestIndices {
         qw.indices()
             .indices1d(LocationID(locationID), types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT))
             .onSuccess {
-                it.daily.forEach { daily ->
-                    println(daily)
-                }
+                println(it.daily.joinToString())
                 assertEquals(200, it.requireCode())
             }.onFailure {
                 println(it)
@@ -50,9 +48,7 @@ class TestIndices {
         qw.indices()
             .indices3d(LocationID(locationID), types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT))
             .onSuccess {
-                it.daily.forEach { daily ->
-                    println(daily)
-                }
+                println(it.daily.joinToString())
                 assertEquals(200, it.requireCode())
             }.onFailure {
                 println(it)

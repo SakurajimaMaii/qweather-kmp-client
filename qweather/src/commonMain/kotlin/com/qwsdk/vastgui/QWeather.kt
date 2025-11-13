@@ -56,7 +56,6 @@ import com.qwsdk.vastgui.api.TimeMachine
 import com.qwsdk.vastgui.api.Tropical
 import com.qwsdk.vastgui.api.Warning
 import com.qwsdk.vastgui.api.Weather
-import com.qwsdk.vastgui.error.InvalidDateException
 import com.qwsdk.vastgui.utils.SingletonHolder
 import com.qwsdk.vastgui.utils.sign.getJwtSigner
 import io.ktor.client.HttpClient
@@ -155,13 +154,12 @@ class QWeather private constructor(internal val configuration: Configuration) {
      * @since 1.1.3
      */
     @OptIn(ExperimentalTime::class)
-    @get:Throws(InvalidDateException::class)
     internal val plan: Plan
         get() {
             // https://blog.qweather.com/announce/public-api-domain-change-to-api-host/
             val limit = LocalDate(2026, 6, 1).atStartOfDayIn(TimeZone.UTC)
             if (Clock.System.now() >= limit && configuration.plan !is Plan.HostApi)
-                throw InvalidDateException("相关 api 已经停止服务，具体参考 https://blog.qweather.com/announce/public-api-domain-change-to-api-host/")
+                throw IllegalArgumentException("相关 api 已经停止服务，具体参考 https://blog.qweather.com/announce/public-api-domain-change-to-api-host/")
             return configuration.plan
         }
 
@@ -347,11 +345,11 @@ class QWeather private constructor(internal val configuration: Configuration) {
      * @property SPF 防晒指数
      */
     enum class IndicesType {
-        ALL, SPORT, WASH_CAR, CLOTHING, FISHING,
-        UV_RAY, TRAVEL, POLLEN_ALLERGY, COMFORT,
-        COLD, AIR_POLLUTION_DIFFUSION_CONDITION,
-        AIR_CONDITIONER, SUNGLASSES, MAKEUP, DRYING,
-        TRAFFIC, SPF
+        ALL, SPORT, WASH_CAR, CLOTHING,
+        FISHING, UV_RAY, TRAVEL, POLLEN_ALLERGY,
+        COMFORT, COLD, AIR_POLLUTION_DIFFUSION_CONDITION, AIR_CONDITIONER,
+        SUNGLASSES, MAKEUP, DRYING, TRAFFIC,
+        SPF
     }
 
     /** [多语言代码](https://dev.qweather.com/docs/resource/language/#language-code) */
@@ -448,7 +446,8 @@ class QWeather private constructor(internal val configuration: Configuration) {
          *
          * @since 1.1.3
          */
-        class Jwt(val keyId: String, val projectId: String, val privateKey: String) : Authentication()
+        class Jwt(val keyId: String, val projectId: String, val privateKey: String) :
+            Authentication()
     }
 
     /**

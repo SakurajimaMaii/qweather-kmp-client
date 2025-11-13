@@ -17,14 +17,12 @@
 package com.qwsdk.vastgui.main.utils
 
 import com.qwsdk.vastgui.QWeather.IndicesType
-import com.qwsdk.vastgui.utils.parseIndices
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class TestParseIndices {
     @Test
     fun parseIndicesTest() {
-        val code = parseIndices(IndicesType.ALL)
-        assertEquals(code, 0)
+        assertEquals(0, IndicesType.ALL.ordinal)
     }
 }

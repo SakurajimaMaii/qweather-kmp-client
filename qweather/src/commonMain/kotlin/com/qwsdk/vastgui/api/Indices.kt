@@ -43,7 +43,7 @@ class Indices internal constructor(override val client: QWeather) : Api {
         val typeArray = if (types.contains(QWeather.IndicesType.ALL)) {
             arrayOf(QWeather.IndicesType.ALL)
         } else types
-        val typeString = typeArray.map { parseIndices(it) }.joinToString(",")
+        val typeString = typeArray.map { it.ordinal }.joinToString(",")
         client.httpClient.get("$url/$days") {
             url {
                 parameter("location", location.location)
