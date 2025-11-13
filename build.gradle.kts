@@ -11,4 +11,5 @@ plugins {
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.kotlinSerialization) apply false
     alias(libs.plugins.kotlinxAtomicfu) apply false
+    alias(libs.plugins.swiftklib) apply false
 }

@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.kotlinxAtomicfu)
+    alias(libs.plugins.swiftklib)
 }
 
 kotlin {
@@ -46,6 +46,16 @@ kotlin {
         }
     }
 
+    listOf(iosX64(),iosArm64(),iosSimulatorArm64()).forEach {
+        it.compilations {
+            val main by getting {
+                cinterops {
+                    create("IosCryptoKit")
+                }
+            }
+        }
+    }
+
     // Source set declarations.
     // Declaring a target automatically creates a source set with the same name. By default, the
     // Kotlin Gradle Plugin creates additional source sets that depend on each other, since it is
@@ -54,6 +64,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.atomicfu)
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.kotlinx.serialization.json)
@@ -78,6 +89,7 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
+                implementation(libs.eddsa)
                 implementation(libs.ktor.client.okhttp)
             }
         }
@@ -91,6 +103,11 @@ kotlin {
                 // KMP dependencies declared in commonMain.
                 implementation(libs.ktor.client.darwin)
             }
+        }
+
+        iosSimulatorArm64Test.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
         }
 
         jvmMain {
@@ -111,6 +128,13 @@ kotlin {
         }
     }
 
+}
+
+swiftklib {
+    create("IosCryptoKit") {
+        path = file("swift")
+        packageName("com.qwsdk.vastgui.cryptokit")
+    }
 }
 
 tasks.withType<Test> {

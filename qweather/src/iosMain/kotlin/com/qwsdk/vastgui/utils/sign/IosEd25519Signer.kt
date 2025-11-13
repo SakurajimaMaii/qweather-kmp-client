@@ -1,6 +1,13 @@
 package com.qwsdk.vastgui.utils.sign
 
+import com.qwsdk.vastgui.cryptokit.IosEd25519CryptoKit
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.usePinned
+import platform.Foundation.NSData
+import platform.Foundation.create
+import platform.posix.memcpy
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
@@ -14,8 +21,28 @@ class IosEd25519Signer(
 ) : JwtSigner {
 
     @OptIn(ExperimentalForeignApi::class)
+    private val delegate = IosEd25519CryptoKit(
+        keyId = keyId,
+        projectId = projectId,
+        privateKeyPem = privateKey
+    )
+
+    @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
     override suspend fun getSign(data: ByteArray): ByteArray {
-        TODO("Not yet implemented")
+        val nsData = data.usePinned { pinned ->
+            NSData.create(bytes = pinned.addressOf(0), length = data.size.toULong())
+        }
+        val signature = delegate.signWithData(nsData)
+        return signature.toByteArray()
     }
 
+}
+
+@OptIn(ExperimentalForeignApi::class)
+fun NSData.toByteArray(): ByteArray {
+    val bytes = ByteArray(length.toInt())
+    bytes.usePinned {
+        memcpy(it.addressOf(0), this.bytes, length)
+    }
+    return bytes
 }
