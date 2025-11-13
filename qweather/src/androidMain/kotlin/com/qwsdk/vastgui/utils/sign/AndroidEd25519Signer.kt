@@ -1,8 +1,10 @@
 package com.qwsdk.vastgui.utils.sign
 
 import io.ktor.util.decodeBase64Bytes
-import java.security.KeyFactory
-import java.security.Signature
+import net.i2p.crypto.eddsa.EdDSAEngine
+import net.i2p.crypto.eddsa.EdDSAPrivateKey
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable
+import java.security.MessageDigest
 import java.security.spec.PKCS8EncodedKeySpec
 
 // Author: Vast Gui
@@ -23,14 +25,13 @@ class AndroidEd25519Signer(
         privateKey.replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
             .replace("\n", "").trim()
-            .let {
-                KeyFactory.getInstance("EdDSA")
-                    .generatePrivate(PKCS8EncodedKeySpec(it.decodeBase64Bytes()))
-            }
+            .let { EdDSAPrivateKey(PKCS8EncodedKeySpec(it.decodeBase64Bytes())) }
     }
 
     override suspend fun getSign(data: ByteArray): ByteArray {
-        return with(Signature.getInstance("EdDSA")) {
+        val spec = EdDSANamedCurveTable.getByName(EdDSANamedCurveTable.ED_25519)
+        val signature = EdDSAEngine(MessageDigest.getInstance(spec.hashAlgorithm))
+        return with(signature) {
             initSign(key)
             update(data, 0, data.size)
             sign()
