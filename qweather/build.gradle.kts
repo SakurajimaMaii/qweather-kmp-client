@@ -1,3 +1,5 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -46,11 +48,13 @@ kotlin {
         }
     }
 
-    listOf(iosX64(),iosArm64(),iosSimulatorArm64()).forEach {
-        it.compilations {
-            val main by getting {
-                cinterops {
-                    create("IosCryptoKit")
+    if (DefaultNativePlatform.getCurrentOperatingSystem().isMacOsX) {
+        listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach {
+            it.compilations {
+                val main by getting {
+                    cinterops {
+                        create("IosCryptoKit")
+                    }
                 }
             }
         }
