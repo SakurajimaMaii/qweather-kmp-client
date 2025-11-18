@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
-import com.qwsdk.vastgui.app.utils.randomID
-import com.qwsdk.vastgui.utils.Coordinate
-import com.qwsdk.vastgui.QWeather.POIType
-import com.qwsdk.vastgui.main.base.requireCode
 import com.qwsdk.vastgui.qw
+import com.qwsdk.vastgui.app.utils.getCurrentDate
+import com.qwsdk.vastgui.app.utils.randomID
+import com.qwsdk.vastgui.example.base.requireCode
+import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.LocationID
-import com.qwsdk.vastgui.utils.Name
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertNull
 
-class TestGeo {
-
+class TestAstronomy {
     private val locationID = randomID()
 
     @Test
-    fun citySearchTest() = runTest {
-        qw.geo().cityLookup(LocationID(locationID)).onSuccess {
-            it.location.forEach { location ->
-                println(location)
-            }
+    fun sunTest() = runTest {
+        qw.astronomy().sun(LocationID(locationID), getCurrentDate()).onSuccess {
+            println("${it.sunrise} ${it.sunset}")
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
@@ -46,11 +42,9 @@ class TestGeo {
     }
 
     @Test
-    fun topCityTest() = runTest {
-        qw.geo().topCity().onSuccess {
-            it.topCityList.forEach { topCity ->
-                println(topCity)
-            }
+    fun moonTest() = runTest {
+        qw.astronomy().moon(LocationID(locationID), getCurrentDate()).onSuccess {
+            println("${it.moonrise} ${it.moonset} ${it.moonPhase}")
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
@@ -59,24 +53,11 @@ class TestGeo {
     }
 
     @Test
-    fun poiLookupTest() = runTest {
-        qw.geo().poiLookup(Name("青岛"), POIType.TSTA).onSuccess {
-            it.poi.forEach { poi ->
-                println(poi)
-            }
-            assertEquals(200, it.requireCode())
-        }.onFailure { t ->
-            println(t)
-            assertNull(t)
-        }
-    }
-
-    @Test
-    fun poiRangeTest() = runTest {
-        qw.geo().poiRange(Coordinate(116.41, 39.92), POIType.scenic).onSuccess {
-            it.poi.forEach { poi ->
-                println(poi)
-            }
+    fun solarElevationAngleTest() = runTest {
+        qw.astronomy().solarElevationAngle(
+            Coordinate(120.34, 36.08), "20240117", "1230", "0800", 43
+        ).onSuccess {
+            println("${it.solarAzimuthAngle} ${it.solarElevationAngle} ${it.hourAngle}")
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)

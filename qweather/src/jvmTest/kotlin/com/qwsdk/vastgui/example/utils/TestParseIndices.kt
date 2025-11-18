@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main.utils
+package com.qwsdk.vastgui.example.utils
 
 import com.qwsdk.vastgui.QWeather.IndicesType
 import org.junit.jupiter.api.Assertions.assertEquals

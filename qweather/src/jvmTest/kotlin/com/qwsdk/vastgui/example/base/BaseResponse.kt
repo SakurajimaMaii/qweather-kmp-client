@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.qwsdk.vastgui.main.base
+package com.qwsdk.vastgui.example.base
 
 import com.qwsdk.vastgui.entity.base.BaseResponse
 

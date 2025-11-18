@@ -14,43 +14,45 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
+import com.qwsdk.vastgui.QWeather
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.randomID
-import com.qwsdk.vastgui.main.base.requireCode
+import com.qwsdk.vastgui.example.base.requireCode
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 
-class TestTimeMachine {
+class TestIndices {
+
     private val locationID = randomID()
 
     @Test
-    fun weatherHistoricalTest() = runTest {
-        qw.timeMachine().weatherHistory(LocationID(locationID), "20251109").onSuccess {
-            it.weatherHourly.forEach { weatherHourly ->
-                println(weatherHourly)
+    fun indices1dTest() = runTest {
+        qw.indices()
+            .indices1d(LocationID(locationID), types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT))
+            .onSuccess {
+                println(it.daily.joinToString())
+                assertEquals(200, it.requireCode())
+            }.onFailure {
+                println(it)
+                assertNull(it)
             }
-            assertEquals(200, it.requireCode())
-        }.onFailure { t ->
-            println(t)
-            assertNull(t)
-        }
     }
 
     @Test
-    fun airHistoricalTest() = runTest {
-        qw.timeMachine().airHistory(LocationID(locationID), "20251109").onSuccess {
-            it.airHourly.forEach { airHourly ->
-                println(airHourly)
+    fun indices3d() = runTest {
+        qw.indices()
+            .indices3d(LocationID(locationID), types = arrayOf(QWeather.IndicesType.SPF, QWeather.IndicesType.SPORT))
+            .onSuccess {
+                println(it.daily.joinToString())
+                assertEquals(200, it.requireCode())
+            }.onFailure {
+                println(it)
+                assertNull(it)
             }
-            assertEquals(200, it.requireCode())
-        }.onFailure { t ->
-            println(t)
-            assertNull(t)
-        }
     }
 }

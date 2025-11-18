@@ -1,10 +1,9 @@
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
 import com.qwsdk.vastgui.api.Console
-import com.qwsdk.vastgui.main.base.requireCode
+import com.qwsdk.vastgui.example.base.requireCode
 import com.qwsdk.vastgui.qw
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import kotlin.test.assertEquals

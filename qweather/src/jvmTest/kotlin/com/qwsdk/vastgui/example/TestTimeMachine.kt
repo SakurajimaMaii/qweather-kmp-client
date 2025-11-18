@@ -14,38 +14,25 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.randomID
-import com.qwsdk.vastgui.main.base.requireCode
-import com.qwsdk.vastgui.utils.Day
-import com.qwsdk.vastgui.utils.Hour
+import com.qwsdk.vastgui.example.base.requireCode
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertNull
 
-class TestWeather {
+class TestTimeMachine {
     private val locationID = randomID()
 
     @Test
-    fun nowTest() = runTest {
-        qw.weather().now(LocationID(locationID)).onSuccess {
-            println(it.now)
-            assertEquals(200, it.requireCode())
-        }.onFailure { t ->
-            println(t)
-            assertNull(t)
-        }
-    }
-
-    @Test
-    fun dailyTest() = runTest {
-        qw.weather().daily(Day.Day30, LocationID(locationID)).onSuccess {
-            it.daily.forEach { daily ->
-                println(daily)
+    fun weatherHistoricalTest() = runTest {
+        qw.timeMachine().weatherHistory(LocationID(locationID), "20251109").onSuccess {
+            it.weatherHourly.forEach { weatherHourly ->
+                println(weatherHourly)
             }
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
@@ -55,10 +42,10 @@ class TestWeather {
     }
 
     @Test
-    fun hourlyTest() = runTest {
-        qw.weather().hourly(Hour.Hour72, LocationID(locationID)).onSuccess {
-            it.hourly.forEach { hourly ->
-                println(hourly)
+    fun airHistoricalTest() = runTest {
+        qw.timeMachine().airHistory(LocationID(locationID), "20251109").onSuccess {
+            it.airHourly.forEach { airHourly ->
+                println(airHourly)
             }
             assertEquals(200, it.requireCode())
         }.onFailure { t ->

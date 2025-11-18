@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
 import com.qwsdk.vastgui.qw
-import com.qwsdk.vastgui.app.utils.getCurrentDate
 import com.qwsdk.vastgui.app.utils.randomID
-import com.qwsdk.vastgui.main.base.requireCode
-import com.qwsdk.vastgui.utils.Coordinate
+import com.qwsdk.vastgui.example.base.requireCode
+import com.qwsdk.vastgui.utils.Day
+import com.qwsdk.vastgui.utils.Hour
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
-class TestAstronomy {
+class TestWeather {
     private val locationID = randomID()
 
     @Test
-    fun sunTest() = runTest {
-        qw.astronomy().sun(LocationID(locationID), getCurrentDate()).onSuccess {
-            println("${it.sunrise} ${it.sunset}")
+    fun nowTest() = runTest {
+        qw.weather().now(LocationID(locationID)).onSuccess {
+            println(it.now)
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
@@ -42,9 +42,11 @@ class TestAstronomy {
     }
 
     @Test
-    fun moonTest() = runTest {
-        qw.astronomy().moon(LocationID(locationID), getCurrentDate()).onSuccess {
-            println("${it.moonrise} ${it.moonset} ${it.moonPhase}")
+    fun dailyTest() = runTest {
+        qw.weather().daily(Day.Day30, LocationID(locationID)).onSuccess {
+            it.daily.forEach { daily ->
+                println(daily)
+            }
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)
@@ -53,11 +55,11 @@ class TestAstronomy {
     }
 
     @Test
-    fun solarElevationAngleTest() = runTest {
-        qw.astronomy().solarElevationAngle(
-            Coordinate(120.34, 36.08), "20240117", "1230", "0800", 43
-        ).onSuccess {
-            println("${it.solarAzimuthAngle} ${it.solarElevationAngle} ${it.hourAngle}")
+    fun hourlyTest() = runTest {
+        qw.weather().hourly(Hour.Hour72, LocationID(locationID)).onSuccess {
+            it.hourly.forEach { hourly ->
+                println(hourly)
+            }
             assertEquals(200, it.requireCode())
         }.onFailure { t ->
             println(t)

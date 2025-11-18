@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
-import com.qwsdk.vastgui.main.base.requireCode
+import com.qwsdk.vastgui.example.base.requireCode
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.utils.Coordinate
-import com.qwsdk.vastgui.utils.Day
-import com.qwsdk.vastgui.utils.Hour
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -30,38 +28,14 @@ import org.junit.jupiter.api.Test
 // Email: guihy2019@gmail.com
 // Date: 2024/1/16
 
-class TestGrid {
+class TestMinutely {
     private val coordinate = Coordinate(116.41, 39.92)
 
     @Test
-    fun nowTest() = runTest {
-        qw.grid().now(coordinate).onSuccess {
-            println(it.now)
-            assertEquals(200, it.requireCode())
-        }.onFailure { t ->
-            println(t)
-            assertNull(t)
-        }
-    }
-
-    @Test
-    fun dailyTest() = runTest {
-        qw.grid().daily(Day.Day3, Coordinate(116.41, 39.92)).onSuccess {
-            it.daily.forEach { daily ->
-                println(daily)
-            }
-            assertEquals(200, it.requireCode())
-        }.onFailure { t ->
-            println(t)
-            assertNull(t)
-        }
-    }
-
-    @Test
-    fun hourlyTest() = runTest {
-        qw.grid().hourly(Hour.Hour24, Coordinate(116.41, 39.92)).onSuccess {
-            it.hourly.forEach { hourly ->
-                println(hourly)
+    fun weatherMinutelyTest() = runTest {
+        qw.minutely().rain(coordinate).onSuccess {
+            it.minutely.forEach { minutely ->
+                println(minutely)
             }
             assertEquals(200, it.requireCode())
         }.onFailure { t ->

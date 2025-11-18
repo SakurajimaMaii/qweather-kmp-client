@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.qwsdk.vastgui.main
+package com.qwsdk.vastgui.example
 
 import com.qwsdk.vastgui.qw
 import com.qwsdk.vastgui.app.utils.getCurrentDate
-import com.qwsdk.vastgui.main.base.requireCode
+import com.qwsdk.vastgui.example.base.requireCode
 import com.qwsdk.vastgui.utils.LocationID
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertEquals

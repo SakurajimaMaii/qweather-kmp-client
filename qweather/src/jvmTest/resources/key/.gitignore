@@ -1,0 +1,8 @@
+# Pem 文件
+*.pem
+
+# Api-Key
+api-key.txt
+
+# Jwt
+jwt.txt
