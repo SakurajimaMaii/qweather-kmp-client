@@ -17,19 +17,28 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
 import com.qwsdk.vastgui.entity.astronomy.Moon
 import com.qwsdk.vastgui.entity.astronomy.SolarElevationAngle
 import com.qwsdk.vastgui.entity.astronomy.Sun
 import com.qwsdk.vastgui.utils.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
 /**
  * [天文](https://dev.qweather.com/docs/api/astronomy/)
  *
  * 天文API提供了全球任意地点未来60天的日出日落、太阳高度角、月升月落和月相数据。
  */
-class Astronomy internal constructor(private val client: QWeather) {
+class Astronomy internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/astronomy"
+
     /**
      * [日出日落](https://dev.qweather.com/docs/api/astronomy/sunrise-sunset/)
      *
@@ -44,12 +53,15 @@ class Astronomy internal constructor(private val client: QWeather) {
      * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
+    @OptIn(ExperimentalTime::class)
     suspend fun sun(
         location: Location, date: String, lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<Sun> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
-        DateUtil(date).verifyYMD()
-        client.httpClient.get("astronomy/sun") {
+        val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val range = current..current.plus(DatePeriod(days = 59))
+        check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
+        client.httpClient.get("$url/sun") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -72,12 +84,15 @@ class Astronomy internal constructor(private val client: QWeather) {
      * [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
+    @OptIn(ExperimentalTime::class)
     suspend fun moon(
         location: Location, date: String, lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<Moon> = apiCatching {
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
-        DateUtil(date).verifyYMD()
-        client.httpClient.get("astronomy/moon") {
+        val current = DateUtil.now.toLocalDateTime(TimeZone.currentSystemDefault()).date
+        val range = current..current.plus(DatePeriod(days = 59))
+        check(DateUtil.verifyYMD(date, range)) { "时间${date}无效，或者不在有效时间范围${range}内" }
+        client.httpClient.get("$url/moon") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)
@@ -100,9 +115,10 @@ class Astronomy internal constructor(private val client: QWeather) {
     suspend fun solarElevationAngle(
         location: Coordinate, date: String, time: String, tz: String, alt: Int
     ): Result<SolarElevationAngle> = apiCatching {
-        DateUtil(date).verifyYMD()
-        DateUtil(time).verifyHM()
-        client.httpClient.get("astronomy/solar-elevation-angle") {
+        check(DateUtil.ymdFormat.parseOrNull(date) != null && DateUtil.hmFormat.parseOrNull(time) != null) {
+            "时间date=${date}和time=${time}可能无效"
+        }
+        client.httpClient.get("$url/solar-elevation-angle") {
             url {
                 parameter("location", location.location)
                 parameter("date", date)

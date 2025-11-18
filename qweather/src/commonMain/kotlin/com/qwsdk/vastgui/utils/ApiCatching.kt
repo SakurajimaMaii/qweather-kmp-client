@@ -16,30 +16,21 @@
 
 package com.qwsdk.vastgui.utils
 
-import com.qwsdk.vastgui.error.ErrorCodeException
+import com.qwsdk.vastgui.entity.base.BaseResponse
 
 // Author: Vast Gui
 // Email: guihy2019@gmail.com
 // Date: 2024/1/16
 
-internal inline fun <T, R : QWSdkResponse> T.apiCatching(block: T.() -> R): Result<R> {
+internal inline fun <T, R : BaseResponse> T.apiCatching(block: T.() -> R): Result<R> {
     val response = try {
         block()
     } catch (exception: Throwable) {
         return Result.failure(exception)
     }
-    return if(response.code.toInt() != 200){
-        val exception = when(response.code.toInt()){
-            204 -> ErrorCodeException.E204()
-            400 -> ErrorCodeException.E400()
-            401 -> ErrorCodeException.E401()
-            402 -> ErrorCodeException.E402()
-            403 -> ErrorCodeException.E403()
-            404 -> ErrorCodeException.E404()
-            409 -> ErrorCodeException.E429()
-            500 -> ErrorCodeException.E500()
-            else -> Throwable()
-        }
-        Result.failure(exception)
-    } else Result.success(response)
+    val error = response.error
+    return if (error != null)
+        Result.failure(RuntimeException("错误代码：${error.status}，错误信息：${error.title}(${error.detail})，详情参考：${error.type}"))
+    else
+        Result.success(response)
 }

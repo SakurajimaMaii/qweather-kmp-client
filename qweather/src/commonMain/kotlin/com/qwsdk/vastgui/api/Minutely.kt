@@ -17,6 +17,7 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
 import com.qwsdk.vastgui.entity.minutely.RainMinutely
 import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.apiCatching
@@ -33,7 +34,10 @@ import io.ktor.client.request.*
  * 分钟级降水 API （临近预报）支持中国 1 公里精度的分钟级降雨预报数据，
  * 为每一分钟的降雨进行精准预测。
  */
-class Minutely internal constructor(private val client: QWeather) {
+class Minutely internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/minutely"
+
     /**
      * [分钟级降水](https://dev.qweather.com/docs/api/minutely/minutely-precipitation/)
      *
@@ -47,7 +51,7 @@ class Minutely internal constructor(private val client: QWeather) {
         location: Coordinate,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<RainMinutely> = apiCatching {
-        client.httpClient.get("minutely/5m") {
+        client.httpClient.get("$url/5m") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)

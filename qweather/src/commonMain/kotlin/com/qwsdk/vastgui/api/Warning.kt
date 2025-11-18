@@ -17,6 +17,8 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
+import com.qwsdk.vastgui.entity.warning.CurrentWeatherAlert
 import com.qwsdk.vastgui.entity.warning.Warning
 import com.qwsdk.vastgui.entity.warning.list.WarningCityList
 import com.qwsdk.vastgui.utils.Coordinate
@@ -27,7 +29,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 
 /**
- * [预警](https://dev.qweather.com/docs/api/warning/)
+ * [预警](https://dev.qweather.com/docs/api/warning/) 。
  *
  * 和风天气灾害预警API提供了全球极端天气预警服务，覆盖中国及全球数十个国家或地区。
  *
@@ -41,9 +43,34 @@ import io.ktor.client.request.*
  * 支持的 [预警严重程度](https://dev.qweather.com/docs/resource/warning-info/#warning-severity) 和
  * [预警类型](https://dev.qweather.com/docs/resource/warning-info/#warning-type) 。
  */
-class Warning internal constructor(private val client: QWeather) {
+class Warning internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/weatheralert/v1"
+
     /**
-     * [天气灾害预警](https://dev.qweather.com/docs/api/warning/weather-warning/)
+     * [实时天气预警](https://dev.qweather.com/docs/api/warning/weather-alert/) 。
+     *
+     * 根据指定的经纬度坐标，查询中国和全球正在生效的官方天气预警信息。
+     * 阅读[实用资料-预警](https://dev.qweather.com/docs/resource/warning-info/)
+     * 以了解预警信息支持的国家和地区、事件类型等必要信息。
+     *
+     * @since 1.1.3
+     */
+    suspend fun current(
+        coordinate: Coordinate,
+        localTime: Boolean = false,
+        lang: QWeather.Lang = QWeather.Lang.ZH
+    ): Result<CurrentWeatherAlert> = apiCatching {
+        client.httpClient.get("$url/current/${coordinate.latitude}/${coordinate.longitude}") {
+            url {
+                parameter("localTime", localTime)
+                parameter("lang", lang)
+            }
+        }.body()
+    }
+
+    /**
+     * [天气灾害预警](https://dev.qweather.com/docs/api/warning/weather-warning/) 。
      *
      * 天气灾害预警API可以获取中国及全球多个国家或地区官方发布的实时天气灾害预警数据。
      *
@@ -55,12 +82,16 @@ class Warning internal constructor(private val client: QWeather) {
      * @param lang 多语言设置，请阅读 [多语言](https://dev.qweather.com/docs/resource/language/)
      * 文档，了解我们的多语言是如何工作、如何设置以及数据是否支持多语言。
      */
+    @Deprecated(
+        message = "当前 API 已弃用，预计在 2026 年 10 月 1 日停止服务。",
+        level = DeprecationLevel.WARNING
+    )
     suspend fun now(
         location: Location,
         lang: QWeather.Lang = QWeather.Lang.ZH
     ): Result<Warning> = apiCatching {
-        check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持Coordinate或LocationID" }
-        client.httpClient.get("warning/now") {
+        check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
+        client.httpClient.get("/v7/warning/now") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -69,7 +100,7 @@ class Warning internal constructor(private val client: QWeather) {
     }
 
     /**
-     * [天气预警城市列表](https://dev.qweather.com/docs/api/warning/weather-warning-city-list/)
+     * [天气预警城市列表](https://dev.qweather.com/docs/api/warning/webapi-v7-weather-warning-city-list/) 。
      *
      * 获取指定国家或地区当前正在发生天气灾害预警的城市列表，根据这些城市列表再查询对应城市的天气灾害预警。
      * - 目前天气预警城市列表仅适用于获取中国（包括港澳台）城市列表。其他国家和地区，请使用 [天气灾害预警][now] 。
@@ -78,10 +109,14 @@ class Warning internal constructor(private val client: QWeather) {
      * @param range 选择指定的国家或地区，使用 ISO 3166 格式。例如 range=cn 或 range=hk 。目前该功能仅支持中国
      * （包括港澳台）地区的城市列表，其他国家和地区请使用请使用 [天气灾害预警][now] 单独获取。
      */
+    @Deprecated(
+        message = "当前 API 已弃用，预计在 2026 年 10 月 1 日停止服务。",
+        level = DeprecationLevel.WARNING
+    )
     suspend fun list(
         range: QWeather.CountryCode = QWeather.CountryCode.CN
     ): Result<WarningCityList> = apiCatching {
-        client.httpClient.get("warning/list") {
+        client.httpClient.get("/v7/warning/list") {
             url {
                 parameter("range", range)
             }

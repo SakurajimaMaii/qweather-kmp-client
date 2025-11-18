@@ -16,10 +16,9 @@
 
 package com.qwsdk.vastgui.entity.astronomy
 
-import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
-import kotlinx.serialization.EncodeDefault
-import kotlinx.serialization.ExperimentalSerializationApi
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
+import com.qwsdk.vastgui.entity.base.Refer
 import kotlinx.serialization.Serializable
 
 /**
@@ -40,17 +39,17 @@ import kotlinx.serialization.Serializable
  * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)。
  */
 @Serializable
-@OptIn(ExperimentalSerializationApi::class)
 data class Moon(
     val fxLink: String? = null,
     val moonPhase: List<MoonPhase> = emptyList(),
     val moonrise: String? = null,
     val moonset: String? = null,
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val updateTime: String? = null,
-    val error: ErrorInfo? = null,
-    override val code: String = error?.status?.toString() ?: "200"
-) : QWSdkResponse {
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [月升月落和月相](https://dev.qweather.com/docs/api/astronomy/moon-and-moon-phase/)
      *
@@ -65,42 +64,10 @@ data class Moon(
      */
     @Serializable
     data class MoonPhase(
-        val fxTime: String,
-        val icon: String,
-        val illumination: String,
-        val name: String,
-        val value: String
-    )
-
-    /**
-     * 请求错误信息。
-     *
-     * ```
-     * {
-     *   "error": {
-     *     "status": 400,
-     *     "type": "https://dev.qweather.com/docs/resource/error-code/#data-not-available",
-     *     "title": "Data Not Available",
-     *     "detail": "Data for this location is temporarily unavailable, please try another location."
-     *   }
-     * }
-     * ```
-     *
-     * @property status HTTP 状态码。
-     * @property type 错误类型链接。
-     * @property title 错误标题。
-     * @property detail 错误详情描述。
-     * @since 1.1.3
-     */
-    @Serializable
-    data class ErrorInfo(
-        @EncodeDefault
-        val status: Int = 0,
-        @EncodeDefault
-        val type: String = "",
-        @EncodeDefault
-        val title: String = "",
-        @EncodeDefault
-        val detail: String = ""
+        val fxTime: String? = null,
+        val icon: String? = null,
+        val illumination: String? = null,
+        val name: String? = null,
+        val value: String? = null
     )
 }

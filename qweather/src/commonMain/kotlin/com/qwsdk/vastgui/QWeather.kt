@@ -45,6 +45,7 @@ import com.qwsdk.vastgui.QWeather.POIType.scenic
 import com.qwsdk.vastgui.api.Air
 import com.qwsdk.vastgui.api.AirQuality
 import com.qwsdk.vastgui.api.Astronomy
+import com.qwsdk.vastgui.api.Console
 import com.qwsdk.vastgui.api.Geo
 import com.qwsdk.vastgui.api.Grid
 import com.qwsdk.vastgui.api.Indices
@@ -56,15 +57,19 @@ import com.qwsdk.vastgui.api.Tropical
 import com.qwsdk.vastgui.api.Warning
 import com.qwsdk.vastgui.api.Weather
 import com.qwsdk.vastgui.utils.SingletonHolder
-import com.qwsdk.vastgui.error.InvalidDateException
+import com.qwsdk.vastgui.utils.sign.getJwtSigner
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpSend
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.plugin
 import io.ktor.http.URLProtocol
-import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -108,41 +113,66 @@ class QWeather private constructor(internal val configuration: Configuration) {
     /**
      * [QWeather] 配置。
      *
-     * @property plan 订阅计划。
-     * @property apiKey Key，点击
-     * [项目和KEY](https://dev.qweather.com/docs/configuration/project-and-key/)
-     * 了解详情。
+     * @property plan 参考 [Plan] 。
+     * @property auth 参考 [Authentication] 。
      * @property logger 允许你对日志进行处理。
      */
-    class Configuration(
-        internal val plan: Plan,
-        internal val apiKey: String,
+    class Configuration {
+        internal val plan: Plan
+        internal val auth: Authentication
+
         /** @since 1.1.2 */
-        internal val logger: ((String) -> Unit)? = null
-    )
+        internal val logger: ((String) -> Unit)?
+
+        /** @since 1.1.3 */
+        @Deprecated(
+            message = "和风天气开发服务使用 JWT(JSON Web Token) 以及 API KEY 的方式进行身份认证。我们推荐使用 JWT 作为首选的身份认证方式，这将极大的提高安全性。",
+            replaceWith = ReplaceWith(
+                "QWeather.Configuration(plan,ApiKey(key),logger)",
+                "com.qwsdk.vastgui.QWeather.Plan",
+                "com.qwsdk.vastgui.QWeather.Authentication.ApiKey"
+            ),
+            level = DeprecationLevel.WARNING
+        )
+        constructor(plan: Plan, key: String, logger: ((String) -> Unit)? = null) {
+            this.plan = plan
+            this.auth = Authentication.ApiKey(key)
+            this.logger = logger
+        }
+
+        /** @since 1.1.3 */
+        constructor(plan: Plan, auth: Authentication, logger: ((String) -> Unit)? = null) {
+            this.plan = plan
+            this.auth = auth
+            this.logger = logger
+        }
+    }
 
     companion object Companion : SingletonHolder<QWeather, Configuration>(::QWeather)
 
+    /**
+     * @since 1.1.3
+     */
     @OptIn(ExperimentalTime::class)
-    @get:Throws(InvalidDateException::class)
-    internal val apiPlan: Plan
+    internal val plan: Plan
         get() {
             // https://blog.qweather.com/announce/public-api-domain-change-to-api-host/
             val limit = LocalDate(2026, 6, 1).atStartOfDayIn(TimeZone.UTC)
             if (Clock.System.now() >= limit && configuration.plan !is Plan.HostApi)
-                throw InvalidDateException("相关 api 已经停止服务，具体参考 https://blog.qweather.com/announce/public-api-domain-change-to-api-host/")
+                throw IllegalArgumentException("相关 api 已经停止服务，具体参考 https://blog.qweather.com/announce/public-api-domain-change-to-api-host/")
             return configuration.plan
         }
 
-    internal val apiKey: String = configuration.apiKey
+    /**
+     * @since 1.1.3
+     */
+    internal val auth: Authentication = configuration.auth
 
     internal val httpClient: HttpClient = HttpClient {
         defaultRequest {
             url {
                 protocol = URLProtocol.HTTPS
                 host = configuration.plan.host
-                path("v7/")
-                parameters.append("key", apiKey)
             }
         }
         install(Logging) {
@@ -157,6 +187,24 @@ class QWeather private constructor(internal val configuration: Configuration) {
             json(Json {
                 explicitNulls = false
             })
+        }
+        if (auth is Authentication.Jwt) {
+            install(Auth) {
+                bearer {
+                    loadTokens {
+                        val token =
+                            getJwtSigner(auth.keyId, auth.projectId, auth.privateKey).getJwt()
+                        BearerTokens(token, "")
+                    }
+                }
+            }
+        }
+    }.also { client ->
+        if (auth is Authentication.ApiKey) {
+            client.plugin(HttpSend).intercept { request ->
+                request.url.parameters.append("key", auth.key)
+                execute(request)
+            }
         }
     }
 
@@ -218,6 +266,12 @@ class QWeather private constructor(internal val configuration: Configuration) {
 
     /** @see Weather */
     fun weather(): Weather = Weather(this)
+
+    /**
+     * @see Console
+     * @since 1.1.3
+     */
+    fun console(): Console = Console(this)
 
     /**
      * 需要查询的台风所在的流域，例如中国处于西北太平洋，即 basin=NP。当前仅支持 NP
@@ -291,11 +345,11 @@ class QWeather private constructor(internal val configuration: Configuration) {
      * @property SPF 防晒指数
      */
     enum class IndicesType {
-        ALL, SPORT, WASH_CAR, CLOTHING, FISHING,
-        UV_RAY, TRAVEL, POLLEN_ALLERGY, COMFORT,
-        COLD, AIR_POLLUTION_DIFFUSION_CONDITION,
-        AIR_CONDITIONER, SUNGLASSES, MAKEUP, DRYING,
-        TRAFFIC, SPF
+        ALL, SPORT, WASH_CAR, CLOTHING,
+        FISHING, UV_RAY, TRAVEL, POLLEN_ALLERGY,
+        COMFORT, COLD, AIR_POLLUTION_DIFFUSION_CONDITION, AIR_CONDITIONER,
+        SUNGLASSES, MAKEUP, DRYING, TRAFFIC,
+        SPF
     }
 
     /** [多语言代码](https://dev.qweather.com/docs/resource/language/#language-code) */
@@ -354,9 +408,7 @@ class QWeather private constructor(internal val configuration: Configuration) {
          * [API Host](https://dev.qweather.com/docs/configuration/api-host/) 来获取。
          * @since 1.1.3
          */
-        class HostApi(host: String) : Plan(host) {
-            override val geoHost: String = "https://${host}/geo/v2"
-        }
+        class HostApi(host: String) : Plan(host)
 
         /**
          * 判断是否是标准版。
@@ -366,6 +418,36 @@ class QWeather private constructor(internal val configuration: Configuration) {
         internal fun isStandard() = this !is Free
 
         internal fun isFree() = this !is Standard
+    }
+
+    /**
+     * [身份认证](https://dev.qweather.com/docs/configuration/authentication/) 。
+     *
+     * @since 1.1.3
+     */
+    sealed class Authentication {
+        /**
+         * [API
+         * KEY](https://dev.qweather.com/docs/configuration/authentication/#api-key)。
+         *
+         * 注意：为了提高安全性，SDK 5+ 将不再支持 API KEY 。从 2027 年 1 月 1 日起，我们将限制使用 API KEY
+         * 进行身份认证的每日请求数量。
+         *
+         * @since 1.1.3
+         */
+        @Deprecated(
+            message = "和风天气开发服务使用 JWT(JSON Web Token) 以及 API KEY 的方式进行身份认证。我们推荐使用 JWT 作为首选的身份认证方式，这将极大的提高安全性。",
+            level = DeprecationLevel.WARNING
+        )
+        class ApiKey(val key: String) : Authentication()
+
+        /**
+         * [Jwt](https://dev.qweather.com/docs/configuration/authentication/#json-web-token)。
+         *
+         * @since 1.1.3
+         */
+        class Jwt(val keyId: String, val projectId: String, val privateKey: String) :
+            Authentication()
     }
 
     /**

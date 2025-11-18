@@ -17,8 +17,9 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
-import com.qwsdk.vastgui.entity.air.daily.AirDaily
-import com.qwsdk.vastgui.entity.air.now.AirNow
+import com.qwsdk.vastgui.api.base.Api
+import com.qwsdk.vastgui.entity.air.DailyAir
+import com.qwsdk.vastgui.entity.air.NowAir
 import com.qwsdk.vastgui.utils.Coordinate
 import com.qwsdk.vastgui.utils.Location
 import com.qwsdk.vastgui.utils.LocationID
@@ -37,8 +38,14 @@ import kotlin.time.ExperimentalTime
  * 中国 3000+ 市县区及 1700+ 监测站点的空气质量 AQI 数据，包括空气质量 （AQI） 实时数据，空气质量未来 5 天预报。
  */
 @OptIn(ExperimentalTime::class)
-@Deprecated(message = "2025年10月1日起，新注册的开发者将无法使用弃用版本空气质量 API，2026年6月1日起，弃用版本空气质量 API 将对所有开发者关闭并停止服务，所有开发者将无法再访问弃用版本获取数据，包括使用API、SDK", level = DeprecationLevel.WARNING)
-class Air internal constructor(private val client: QWeather) {
+@Deprecated(
+    message = "2025年10月1日起，新注册的开发者将无法使用弃用版本空气质量 API，2026年6月1日起，弃用版本空气质量 API 将对所有开发者关闭并停止服务，所有开发者将无法再访问弃用版本获取数据，包括使用API、SDK",
+    level = DeprecationLevel.WARNING
+)
+class Air internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/air"
+
     /**
      * [实时空气质量](https://dev.qweather.com/docs/api/air-quality/webapi-v7-air-now/)
      *
@@ -58,11 +65,11 @@ class Air internal constructor(private val client: QWeather) {
     suspend fun now(
         location: Location,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<AirNow> = apiCatching {
+    ): Result<NowAir> = apiCatching {
         val limit = LocalDate(2026, 6, 1).atStartOfDayIn(TimeZone.UTC)
         check(Clock.System.now() < limit) { "2025年10月1日起，新注册的开发者将无法使用弃用版本空气质量 API，2026年6月1日起，弃用版本空气质量 API 将对所有开发者关闭并停止服务，所有开发者将无法再访问弃用版本获取数据，包括使用API、SDK" }
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
-        client.httpClient.get("air/now") {
+        client.httpClient.get("$url/now") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)
@@ -88,11 +95,11 @@ class Air internal constructor(private val client: QWeather) {
     suspend fun daily(
         location: Location,
         lang: QWeather.Lang = QWeather.Lang.ZH
-    ): Result<AirDaily> = apiCatching {
+    ): Result<DailyAir> = apiCatching {
         val limit = LocalDate(2026, 6, 1).atStartOfDayIn(TimeZone.UTC)
         check(Clock.System.now() < limit) { "2025年10月1日起，新注册的开发者将无法使用弃用版本空气质量 API，2026年6月1日起，弃用版本空气质量 API 将对所有开发者关闭并停止服务，所有开发者将无法再访问弃用版本获取数据，包括使用API、SDK" }
         check(location is LocationID || location is Coordinate) { "无效类型，当前仅支持 Coordinate 或 LocationID" }
-        client.httpClient.get("air/5d") {
+        client.httpClient.get("$url/5d") {
             url {
                 parameter("location", location.location)
                 parameter("lang", lang)

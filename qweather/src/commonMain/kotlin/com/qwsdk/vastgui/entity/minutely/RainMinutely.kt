@@ -16,30 +16,35 @@
 
 package com.qwsdk.vastgui.entity.minutely
 
-import com.qwsdk.vastgui.api.Minutely
-import com.qwsdk.vastgui.entity.Refer
-import com.qwsdk.vastgui.utils.QWSdkResponse
+import com.qwsdk.vastgui.entity.base.Refer
+import com.qwsdk.vastgui.entity.base.BaseResponse
+import com.qwsdk.vastgui.entity.base.error.ErrorInfo
 import kotlinx.serialization.Serializable
 
 /**
  * [分钟级降水](https://dev.qweather.com/docs/api/minutely/minutely-precipitation/)
  *
- * @property code 请参考 [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
+ * @property code 请参考
+ * [状态码](https://dev.qweather.com/docs/resource/status-code/) 。
  * @property fxLink 当前数据的响应式页面，便于嵌入网站或应用。
  * @property minutely 参考 [Minutely] 。
  * @property refer 参考 [Refer] 。
  * @property summary 分钟降水描述。
- * @property updateTime 当前 [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time) 。
+ * @property updateTime 当前
+ * [API的最近更新时间](https://dev.qweather.com/docs/resource/glossary/#update-time)
+ * 。
  */
 @Serializable
 data class RainMinutely(
-    override val code: String,
     val fxLink: String? = null,
     val minutely: List<Minutely> = emptyList(),
-    val refer: Refer = Refer(),
+    val refer: Refer? = null,
     val summary: String? = null,
-    val updateTime: String? = null
-) : QWSdkResponse {
+    val updateTime: String? = null,
+    @Deprecated("建议使用 ErrorInfo.status", level = DeprecationLevel.WARNING)
+    override val code: String? = null,
+    override val error: ErrorInfo? = null
+) : BaseResponse {
     /**
      * [分钟级降水](https://dev.qweather.com/docs/api/minutely/minutely-precipitation/)
      *
@@ -49,8 +54,8 @@ data class RainMinutely(
      */
     @Serializable
     data class Minutely(
-        val fxTime: String,
-        val precip: String,
-        val type: String
+        val fxTime: String? = null,
+        val precip: String? = null,
+        val type: String? = null
     )
 }

@@ -17,6 +17,7 @@
 package com.qwsdk.vastgui.api
 
 import com.qwsdk.vastgui.QWeather
+import com.qwsdk.vastgui.api.base.Api
 import com.qwsdk.vastgui.entity.indices.Indices
 import com.qwsdk.vastgui.utils.*
 import io.ktor.client.call.*
@@ -28,7 +29,10 @@ import io.ktor.client.request.*
  * 天气生活指数包括洗车指数、穿衣指数、感冒指数、过敏指数、紫外线指数、
  * 钓鱼指数等数据。天气指数支持中国3000+个市县区和海外 15 万个城市天气预报。
  */
-class Indices internal constructor(private val client: QWeather) {
+class Indices internal constructor(override val client: QWeather) : Api {
+
+    override val url: String = "/v7/indices"
+
     private suspend fun indices(
         days: String,
         location: Location,
@@ -39,8 +43,8 @@ class Indices internal constructor(private val client: QWeather) {
         val typeArray = if (types.contains(QWeather.IndicesType.ALL)) {
             arrayOf(QWeather.IndicesType.ALL)
         } else types
-        val typeString = typeArray.map { parseIndices(it) }.joinToString(",")
-        client.httpClient.get("indices/$days") {
+        val typeString = typeArray.map { it.ordinal }.joinToString(",")
+        client.httpClient.get("$url/$days") {
             url {
                 parameter("location", location.location)
                 parameter("type", typeString)
