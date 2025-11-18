@@ -9,23 +9,23 @@
 
 #### 基于 HostApi 和 Jwt 认证：
 
-    ```kotlin
-    val jwt = Configuration(
-        Plan.HostApi("abc1234xyz.def.qweatherapi.com"),
-        QWeather.Authentication.Jwt("key-id", "project-id", "private-key")
-    )
-    val qw = QWeather.getInstance(jwt)
-    ```
+```kotlin
+val jwt = Configuration(
+    Plan.HostApi("abc1234xyz.def.qweatherapi.com"),
+    QWeather.Authentication.Jwt("key-id", "project-id", "private-key")
+)
+val qw = QWeather.getInstance(jwt)
+```
 
 #### 基于 Api-Key
 
-    ```kotlin
-    val key = Configuration(
-        Plan.HostApi("abc1234xyz.def.qweatherapi.com"),
-        ApiKey("api-key")
-    )
-    val qw = QWeather.getInstance(key)
-    ```
+```kotlin
+val key = Configuration(
+    Plan.HostApi("abc1234xyz.def.qweatherapi.com"),
+    ApiKey("api-key")
+)
+val qw = QWeather.getInstance(key)
+```
 
 ### 发送请求
 
@@ -34,6 +34,9 @@ qw.air().daily(LocationID(locationId), Lang.EN)
     .onSuccess { println(it.daily.joinToString()) }
     .onFailure { println(it) }
 ```
+
+> [!NOTE]
+> 更多请求请参考[示例](https://github.com/SakurajimaMaii/qweather-kmp/tree/main/qweather/src/jvmTest/kotlin/com/qwsdk/vastgui/example)部分
 
 ## 支持的平台
 
