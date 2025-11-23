@@ -137,7 +137,7 @@ kotlin {
 swiftklib {
     create("IosCryptoKit") {
         path = file("swift")
-        packageName("com.qwsdk.vastgui.cryptokit")
+        packageName("com.qweather.vastgui.client.ios")
     }
 }
 

@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -34,15 +35,16 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(project(":qweather"))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.runtime)
+            implementation(compose.ui)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.kermit)
+            implementation(project(":qweather"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -55,7 +57,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.qwsdk.vastgui.app"
+    namespace = "com.qweather.vastgui.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
