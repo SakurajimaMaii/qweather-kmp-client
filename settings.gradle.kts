@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = "qweather-kmp"
+rootProject.name = "qweather-kmp-client"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
