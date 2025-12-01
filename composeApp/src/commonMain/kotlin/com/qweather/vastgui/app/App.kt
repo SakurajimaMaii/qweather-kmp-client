@@ -42,10 +42,10 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import qweather_kmp.composeapp.generated.resources.Res
-import qweather_kmp.composeapp.generated.resources.compose_multiplatform
-import qweather_kmp.composeapp.generated.resources.jwt
-import qweather_kmp.composeapp.generated.resources.key
+import qweather_kmp_client.composeapp.generated.resources.Res
+import qweather_kmp_client.composeapp.generated.resources.compose_multiplatform
+import qweather_kmp_client.composeapp.generated.resources.jwt
+import qweather_kmp_client.composeapp.generated.resources.key
 
 @Serializable
 data class Jwt(val hostApi: String, val keyId: String, val projectId: String)

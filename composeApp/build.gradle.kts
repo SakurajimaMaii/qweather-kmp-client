@@ -60,7 +60,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.kermit)
-            implementation(project(":qweather"))
+            implementation(libs.qweather.kmp.client)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
