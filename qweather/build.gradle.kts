@@ -163,47 +163,43 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-val secretPropsFile: File = project.rootProject.file("maven.properties")
-if (secretPropsFile.exists()) {
-    secretPropsFile.reader().use {
-        Properties().apply {
-            load(it)
-        }
-    }.onEach { (name, value) ->
-        ext[name.toString()] = value
-    }
-}
-
 fun getExtraString(name: String) = ext[name]?.toString()
 
-mavenPublishing {
-    publishToMavenCentral()
+val secretPropsFile: File = project.rootProject.file("maven.properties")
+if (secretPropsFile.exists()) {
+    secretPropsFile.reader()
+        .use { Properties().apply { load(it) } }
+        .onEach { (name, value) -> ext[name.toString()] = value }
 
-    signAllPublications()
+    mavenPublishing {
+        publishToMavenCentral()
 
-    coordinates("io.github.sakurajimamaii", "qweather-kmp-client", "2.0.0-SNAPSHOT")
+        signAllPublications()
 
-    pom {
-        name = "qweather-kmp-client"
-        description = "An SDK developed using QWeather Web API and Ktor, designed for Kotlin Multiplatform."
-        inceptionYear = "2025"
-        url = "https://github.com/SakurajimaMaii/qweather-kmp-client"
-        licenses {
-            license {
-                name = "The Apache License, Version 2.0"
-                url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-                distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
-            }
-        }
-        developers {
-            developer {
-                id.set(getExtraString("developerId"))
-                name.set(getExtraString("developerName"))
-                email.set(getExtraString("developerEmail"))
-            }
-        }
-        scm {
+        coordinates("io.github.sakurajimamaii", "qweather-kmp-client", "2.0.0-SNAPSHOT")
+
+        pom {
+            name = "qweather-kmp-client"
+            description = "An SDK developed using QWeather Web API and Ktor, designed for Kotlin Multiplatform."
+            inceptionYear = "2025"
             url = "https://github.com/SakurajimaMaii/qweather-kmp-client"
+            licenses {
+                license {
+                    name = "The Apache License, Version 2.0"
+                    url = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                    distribution = "https://www.apache.org/licenses/LICENSE-2.0.txt"
+                }
+            }
+            developers {
+                developer {
+                    id.set(getExtraString("developerId"))
+                    name.set(getExtraString("developerName"))
+                    email.set(getExtraString("developerEmail"))
+                }
+            }
+            scm {
+                url = "https://github.com/SakurajimaMaii/qweather-kmp-client"
+            }
         }
     }
 }
